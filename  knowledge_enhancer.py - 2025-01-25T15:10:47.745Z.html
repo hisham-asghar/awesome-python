@@ -1,0 +1,62 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS.get(topic)
+    if url:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()['fact']
+    return "Unable to fetch a fact at the moment. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.title()}!")
+    # This is a placeholder for quiz questions. In a real scenario, you'd fetch these from an API or database.
+    quiz_questions = {
+        'science': [
+            {"question": "What is the chemical symbol for water?", "options": ["H2O", "CO2", "NaCl"], "answer": "H2O"},
+            # Add more questions here
+        ],
+        # Add quiz questions for other topics similarly
+    }
+    questions = quiz_questions.get(topic, [])
+    score = 0
+    for q in questions:
+        print(q['question'])
+        for i, option in enumerate(q['options'], 1):
+            print(f"{i}. {option}")
+        answer = input("Your answer (number): ")
+        if q['options'][int(answer)-1] == q['answer']:
+            print("Correct!")
+            score += 1
+        else:
+            print("Incorrect!")
+    print(f"\nYour score: {score}/{len(questions)}")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    print(f"\nHere's a random fact about {topic.title()}:\n{fetch_fact(topic)}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
