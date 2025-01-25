@@ -1,0 +1,50 @@
+import requests
+import random
+
+# Define the topics and their corresponding APIs or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS.get(topic)
+    if url:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()['fact']
+    return "Unable to fetch a fact at the moment. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic} with a quick quiz!")
+    # This is a placeholder for the quiz logic. In a real application, you would fetch questions from an API or database.
+    print("Question: What is the capital of France?")
+    print("A. Paris\nB. London\nC. Berlin\nD. Madrid")
+    answer = input("Your answer: ").strip().upper()
+    if answer == 'A':
+        print("Correct!")
+    else:
+        print("Incorrect. The correct answer is A. Paris.")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    fact = fetch_fact(topic)
+    print(f"\nHere's a random fact about {topic}: {fact}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
