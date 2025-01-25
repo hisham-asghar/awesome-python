@@ -1,0 +1,55 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    url = f"https://api.facts.com/{topic}/random"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Define a function to fetch quiz questions from an API
+def fetch_quiz(topic):
+    url = f"https://api.quiz.com/{topic}/questions"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['questions']
+    else:
+        return "Failed to fetch quiz questions. Please try again."
+
+# Main menu function
+def main_menu():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+    choice = input("Enter your choice (1-4): ")
+    topics = ['science', 'technology', 'history', 'general_knowledge']
+    if choice in ['1', '2', '3', '4']:
+        topic = topics[int(choice)-1]
+        print(f"\nHere's a random fact about {topic}:")
+        fact = fetch_fact(topic)
+        print(fact)
+        print("\nNow, let's test your knowledge with a quick quiz!")
+        questions = fetch_quiz(topic)
+        if isinstance(questions, list):
+            for question in questions:
+                print(f"\n{question['question']}")
+                for i, option in enumerate(question['options']):
+                    print(f"{i+1}. {option}")
+                answer = input("Your answer (1-4): ")
+                if answer == str(question['correct_option']):
+                    print("Correct!")
+                else:
+                    print(f"Wrong! The correct answer is {question['correct_option']}: {question['options'][question['correct_option']-1]}")
+        else:
+            print(questions)
+    else:
+        print("Invalid choice. Please restart the program.")
+
+if __name__ == "__main__":
+    main_menu()
