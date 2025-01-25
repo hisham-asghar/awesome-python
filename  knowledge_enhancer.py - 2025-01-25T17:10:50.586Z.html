@@ -1,0 +1,68 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    url = f"https://api.api-ninjas.com/v1/facts?category={topic}"
+    response = requests.get(url, headers={'X-Api-Key': 'YOUR_API_KEY'})
+    if response.status_code == requests.codes.ok:
+        return response.json()[0]['fact']
+    else:
+        return "Unable to fetch a fact at the moment."
+
+# Define a function to display the menu and get user's choice
+def display_menu():
+    print("\nWelcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+    choice = input("Enter your choice (1-4): ")
+    return choice
+
+# Define a function to conduct a quiz
+def conduct_quiz(topic):
+    questions = {
+        'Science': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['A. H2O', 'B. CO2', 'C. O2', 'D. H2'], 'answer': 'A'},
+            # Add more questions here
+        ],
+        'Technology': [
+            {'question': 'What does CPU stand for?', 'options': ['A. Central Processing Unit', 'B. Computer Processing Unit', 'C. Central Process Unit', 'D. Computer Process Unit'], 'answer': 'A'},
+            # Add more questions here
+        ],
+        # Add more topics and questions here
+    }
+    if topic in questions:
+        for q in questions[topic]:
+            print(q['question'])
+            for option in q['options']:
+                print(option)
+            user_answer = input("Your answer (A, B, C, D): ")
+            if user_answer.upper() == q['answer']:
+                print("Correct!")
+            else:
+                print(f"Wrong! The correct answer is {q['answer']}.")
+    else:
+        print("No quiz available for this topic.")
+
+# Main function to run the program
+def main():
+    while True:
+        choice = display_menu()
+        topics = ['science', 'technology', 'history', 'general']
+        if choice in ['1', '2', '3', '4']:
+            topic = topics[int(choice)-1]
+            print(f"\nHere's a random fact about {topic.capitalize()}:")
+            fact = fetch_fact(topic)
+            print(fact)
+            print("\nLet's test your knowledge with a quick quiz!")
+            conduct_quiz(topic.capitalize())
+        else:
+            print("Invalid choice. Please try again.")
+        if input("\nDo you want to learn more? (yes/no): ").lower() != 'yes':
+            break
+
+if __name__ == "__main__":
+    main()
