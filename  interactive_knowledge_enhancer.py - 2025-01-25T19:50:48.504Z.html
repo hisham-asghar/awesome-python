@@ -1,0 +1,54 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://api.sciencefacts.com/random',
+    'technology': 'https://api.techfacts.com/random',
+    'history': 'https://api.historyfacts.com/random',
+    'general knowledge': 'https://api.generalfacts.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz question based on the fetched fact
+def generate_quiz(fact):
+    # This is a placeholder. In a real scenario, you would parse the fact and generate a relevant question.
+    question = f"What is the significance of {fact.split()[0]}?"
+    options = ["Option A", "Option B", "Option C", "Option D"]
+    answer = random.choice(options)
+    return question, options, answer
+
+# Main function to run the interactive knowledge enhancer
+def main():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: ")) - 1
+    selected_topic = list(TOPICS.keys())[choice]
+    print(f"\nYou selected: {selected_topic.title()}")
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nDid you know? {fact}")
+    
+    # Generate and display a quiz question
+    question, options, answer = generate_quiz(fact)
+    print(f"\nQuiz Time!\n{question}")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+    user_answer = int(input("Enter the number of your answer: ")) - 1
+    if options[user_answer] == answer:
+        print("Correct! Great job!")
+    else:
+        print(f"Incorrect. The correct answer was: {answer}")
+
+if __name__ == "__main__":
+    main()
