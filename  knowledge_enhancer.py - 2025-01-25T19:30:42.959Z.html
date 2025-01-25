@@ -1,0 +1,43 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding APIs or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS[topic]
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch fact. Please try again."
+
+# Function to generate a quiz based on the topic
+def generate_quiz(topic):
+    # Placeholder for quiz generation logic
+    # This would involve fetching questions from an API or a predefined list
+    # and presenting them as multiple-choice questions
+    print(f"Quiz for {topic} topic will be generated here.")
+
+# Main function to interact with the user
+def main():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(TOPICS.keys())[choice-1]
+    print(f"\nYou selected {topic}. Here's a random fact:")
+    fact = fetch_fact(topic)
+    print(fact)
+    print("\nNow, let's test your knowledge with a quick quiz!")
+    generate_quiz(topic)
+
+if __name__ == "__main__":
+    main()
