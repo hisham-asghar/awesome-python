@@ -1,0 +1,67 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://api.sciencefacts.com/random',
+    'technology': 'https://api.techfacts.com/random',
+    'history': 'https://api.historyfacts.com/random',
+    'general knowledge': 'https://api.generalfacts.com/random'
+}
+
+# Predefined quiz questions for each topic
+QUIZ_QUESTIONS = {
+    'science': [
+        {'question': 'What is the chemical symbol for water?', 'options': ['H2O', 'CO2', 'NaCl', 'O2'], 'answer': 'H2O'},
+        {'question': 'What planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+    ],
+    'technology': [
+        {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'], 'answer': 'Central Processing Unit'},
+        {'question': 'Which company developed the Python programming language?', 'options': ['Google', 'Microsoft', 'Python Software Foundation', 'Oracle'], 'answer': 'Python Software Foundation'}
+    ],
+    'history': [
+        {'question': 'Who was the first President of the United States?', 'options': ['Thomas Jefferson', 'George Washington', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+        {'question': 'In which year did World War II end?', 'options': ['1945', '1939', '1941', '1943'], 'answer': '1945'}
+    ],
+    'general knowledge': [
+        {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+        {'question': 'How many continents are there?', 'options': ['5', '6', '7', '8'], 'answer': '7'}
+    ]
+}
+
+def fetch_fact(topic):
+    # Fetch a random fact from the API
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+def take_quiz(topic):
+    questions = QUIZ_QUESTIONS[topic]
+    score = 0
+    for question in questions:
+        print(question['question'])
+        for i, option in enumerate(question['options'], 1):
+            print(f"{i}. {option}")
+        answer = input("Your answer (number): ")
+        if question['options'][int(answer)-1] == question['answer']:
+            print("Correct!")
+            score += 1
+        else:
+            print(f"Wrong! The correct answer was: {question['answer']}")
+    print(f"You scored {score} out of {len(questions)}.")
+
+def main():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(TOPICS.keys())[choice-1]
+    print(f"\nHere's a random fact about {topic}:\n{fetch_fact(topic)}")
+    print("\nNow, let's test your knowledge with a quiz!")
+    take_quiz(topic)
+
+if __name__ == "__main__":
+    main()
