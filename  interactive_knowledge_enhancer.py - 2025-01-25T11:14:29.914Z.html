@@ -1,0 +1,100 @@
+import random
+import requests
+
+# Define a dictionary of topics with their respective facts and questions
+topics = {
+    'science': {
+        'facts': [
+            'The speed of light is approximately 299,792 kilometers per second.',
+            'Water is made up of two hydrogen atoms and one oxygen atom.',
+            'The human body has 206 bones.'
+        ],
+        'questions': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['H2O', 'CO2', 'O2', 'H2'], 'answer': 'H2O'},
+            {'question': 'Which planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+        ]
+    },
+    'technology': {
+        'facts': [
+            'The first computer programmer was Ada Lovelace.',
+            'The first website was created in 1991.',
+            'Python is a high-level programming language.'
+        ],
+        'questions': [
+            {'question': 'Who is known as the father of computers?', 'options': ['Charles Babbage', 'Alan Turing', 'Bill Gates', 'Steve Jobs'], 'answer': 'Charles Babbage'},
+            {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Programming Unit', 'Computer Programming Unit'], 'answer': 'Central Processing Unit'}
+        ]
+    },
+    'history': {
+        'facts': [
+            'The Great Wall of China is over 13,000 miles long.',
+            'The Declaration of Independence was signed in 1776.',
+            'The Titanic sank in 1912.'
+        ],
+        'questions': [
+            {'question': 'Who was the first President of the United States?', 'options': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+            {'question': 'In which year did World War II end?', 'options': ['1945', '1939', '1941', '1943'], 'answer': '1945'}
+        ]
+    },
+    'general knowledge': {
+        'facts': [
+            'The Eiffel Tower was originally intended for Barcelona.',
+            'Bananas are berries, but strawberries are not.',
+            'The shortest war in history lasted 38-45 minutes.'
+        ],
+        'questions': [
+            {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'Which is the largest ocean on Earth?', 'options': ['Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean', 'Pacific Ocean'], 'answer': 'Pacific Ocean'}
+        ]
+    }
+}
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print('Welcome to the Interactive Knowledge Enhancer!')
+    print('Please select a topic:')
+    for i, topic in enumerate(topics.keys(), 1):
+        print(f'{i}. {topic.capitalize()}')
+    choice = int(input('Enter the number of your choice: '))
+    return list(topics.keys())[choice - 1]
+
+# Function to display a random fact from the selected topic
+def display_fact(topic):
+    fact = random.choice(topics[topic]['facts'])
+    print(f'Here is a random fact about {topic}: {fact}')
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f'\nLet\'s test your knowledge on {topic}!')
+    score = 0
+    for question in topics[topic]['questions']:
+        print(f'\n{question["question"]}')
+        for i, option in enumerate(question['options'], 1):
+            print(f'{i}. {option}')
+        answer = input('Your answer (enter the number): ')
+        if question['options'][int(answer) - 1] == question['answer']:
+            print('Correct!')
+            score += 1
+        else:
+            print(f'Wrong! The correct answer is: {question["answer"]}')
+    print(f'\nYour final score is {score}/{len(topics[topic]["questions"])}')
+
+# Function to fetch real-time educational content using an API
+def fetch_educational_content():
+    url = 'https://uselessfacts.jsph.pl/random.json?language=en'
+    response = requests.get(url)
+    if response.status_code == 200:
+        fact = response.json()['text']
+        print(f'\nHere is a random educational fact: {fact}')
+    else:
+        print('Failed to fetch educational content.')
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    display_fact(topic)
+    conduct_quiz(topic)
+    fetch_educational_content()
+
+if __name__ == '__main__':
+    main()
