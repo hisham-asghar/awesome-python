@@ -1,0 +1,65 @@
+import requests
+import random
+
+# Define the topics and their corresponding APIs or facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS[topic]
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz based on the selected topic
+def generate_quiz(topic):
+    # This is a placeholder for the quiz generation logic
+    # In a real implementation, this would fetch questions from an API or database
+    questions = [
+        {
+            'question': 'What is the capital of France?',
+            'options': ['Paris', 'London', 'Berlin', 'Madrid'],
+            'answer': 'Paris'
+        },
+        {
+            'question': 'Who invented the telephone?',
+            'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Guglielmo Marconi'],
+            'answer': 'Alexander Graham Bell'
+        }
+    ]
+    return random.choice(questions)
+
+# Main function to run the interactive knowledge app
+def main():
+    print("Welcome to the Interactive Knowledge App!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter the number of your choice: ")) - 1
+    selected_topic = list(TOPICS.keys())[choice]
+    print(f"\nYou selected: {selected_topic.capitalize()}")
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}:\n{fact}")
+    
+    # Generate and display a quiz
+    quiz = generate_quiz(selected_topic)
+    print(f"\nLet's test your knowledge with a quiz!\nQuestion: {quiz['question']}")
+    for i, option in enumerate(quiz['options'], 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if quiz['options'][answer - 1] == quiz['answer']:
+        print("Correct! Well done.")
+    else:
+        print(f"Incorrect. The correct answer is: {quiz['answer']}")
+
+if __name__ == "__main__":
+    main()
