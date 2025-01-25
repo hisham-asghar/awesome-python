@@ -1,0 +1,72 @@
+import requests
+import random
+
+# Define the topics and their corresponding APIs or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch fact. Please try again."
+
+# Function to generate a quiz question based on the topic
+def generate_quiz(topic):
+    # This is a placeholder. In a real scenario, you would fetch or generate questions dynamically.
+    questions = {
+        'science': {
+            'question': 'What is the chemical symbol for water?',
+            'options': ['H2O', 'CO2', 'NaCl', 'O2'],
+            'answer': 'H2O'
+        },
+        'technology': {
+            'question': 'What does CPU stand for?',
+            'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'],
+            'answer': 'Central Processing Unit'
+        },
+        'history': {
+            'question': 'Who was the first president of the United States?',
+            'options': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'],
+            'answer': 'George Washington'
+        },
+        'general knowledge': {
+            'question': 'What is the capital of France?',
+            'options': ['Paris', 'London', 'Berlin', 'Madrid'],
+            'answer': 'Paris'
+        }
+    }
+    return questions[topic]
+
+# Main function to interact with the user
+def main():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter the number of your choice: ")) - 1
+    selected_topic = list(TOPICS.keys())[choice]
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}: {fact}")
+    
+    # Generate and display a quiz question
+    quiz = generate_quiz(selected_topic)
+    print(f"\nLet's test your knowledge with a quiz question:\n{quiz['question']}")
+    for i, option in enumerate(quiz['options'], 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if quiz['options'][answer - 1] == quiz['answer']:
+        print("Correct! Well done.")
+    else:
+        print(f"Incorrect. The correct answer is: {quiz['answer']}")
+
+if __name__ == "__main__":
+    main()
