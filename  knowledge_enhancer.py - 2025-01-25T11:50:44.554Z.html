@@ -1,0 +1,57 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding APIs or data
+TOPICS = {
+    'science': 'https://science-facts-api.herokuapp.com/api/facts',
+    'technology': 'https://tech-facts-api.herokuapp.com/api/facts',
+    'history': 'https://history-facts-api.herokuapp.com/api/facts',
+    'general knowledge': 'https://general-knowledge-facts-api.herokuapp.com/api/facts'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.capitalize()}!")
+    fact = fetch_fact(topic)
+    print(f"\nHere's a fact: {fact['fact']}")
+    # For simplicity, let's assume the quiz is about guessing the year of the fact
+    print("\nQuiz: In which year did this happen?")
+    correct_answer = fact['year']
+    options = [correct_answer, correct_answer-1, correct_answer+1, correct_answer+2]
+    random.shuffle(options)
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+    user_answer = int(input("Your answer: "))
+    if options[user_answer-1] == correct_answer:
+        print("Correct!")
+    else:
+        print(f"Wrong! The correct answer was {correct_answer}.")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    print(f"\nYou selected {topic.capitalize()}. Here's a random fact:")
+    fact = fetch_fact(topic)
+    print(f"\n{fact['fact']}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
