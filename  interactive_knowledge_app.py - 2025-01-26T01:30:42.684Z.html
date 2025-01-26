@@ -1,0 +1,56 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    url = f"https://api.facts.com/{topic}/random"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Unable to fetch a fact at the moment."
+
+# Define a function to fetch quiz questions from an API
+def fetch_quiz(topic):
+    url = f"https://api.quiz.com/{topic}/questions"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['questions']
+    else:
+        return []
+
+# Main function to run the interactive knowledge app
+def main():
+    print("Welcome to the Interactive Knowledge App!")
+    print("Please select a topic to learn more about:")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+    choice = input("Enter your choice (1-4): ")
+
+    topics = {1: 'science', 2: 'technology', 3: 'history', 4: 'general'}
+    selected_topic = topics.get(int(choice), 'general')
+
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}: {fact}")
+
+    # Fetch and conduct a quiz
+    questions = fetch_quiz(selected_topic)
+    if questions:
+        print("\nLet's test your knowledge with a quick quiz!")
+        for question in questions:
+            print(f"\n{question['question']}")
+            for i, option in enumerate(question['options']):
+                print(f"{i+1}. {option}")
+            answer = input("Your answer (1-4): ")
+            if int(answer) == question['answer']:
+                print("Correct!")
+            else:
+                print(f"Wrong! The correct answer was {question['answer']}.")
+    else:
+        print("\nSorry, no quiz questions are available at the moment.")
+
+if __name__ == "__main__":
+    main()
