@@ -1,0 +1,81 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://api.sciencefacts.com/random',
+    'technology': 'https://api.techfacts.com/random',
+    'history': 'https://api.historyfacts.com/random',
+    'general knowledge': 'https://api.generalfacts.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS.get(topic)
+    if url:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()['fact']
+    return 'Unable to fetch fact at the moment. Please try again later.'
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print('\nWelcome to Knowledge Enhancer!')
+    print('Please select a topic to learn more about:')
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f'{i}. {topic.title()}')
+    choice = input('Enter the number of your choice: ')
+    try:
+        choice = int(choice)
+        if 1 <= choice <= len(TOPICS):
+            return list(TOPICS.keys())[choice-1]
+    except ValueError:
+        pass
+    print('Invalid choice. Please try again.')
+    return display_menu()
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f'\nHere is a quiz on {topic}:')
+    # This is a placeholder for quiz questions. In a real application, you would fetch these from an API or database.
+    questions = {
+        'science': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['A. H2O', 'B. CO2', 'C. O2', 'D. N2'], 'answer': 'A'},
+            {'question': 'Which planet is known as the Red Planet?', 'options': ['A. Earth', 'B. Mars', 'C. Jupiter', 'D. Saturn'], 'answer': 'B'}
+        ],
+        'technology': [
+            {'question': 'What does CPU stand for?', 'options': ['A. Central Processing Unit', 'B. Computer Processing Unit', 'C. Central Process Unit', 'D. Computer Process Unit'], 'answer': 'A'},
+            {'question': 'Which company developed the Python programming language?', 'options': ['A. Google', 'B. Microsoft', 'C. Python Software Foundation', 'D. Oracle'], 'answer': 'C'}
+        ],
+        'history': [
+            {'question': 'Who was the first President of the United States?', 'options': ['A. Thomas Jefferson', 'B. George Washington', 'C. Abraham Lincoln', 'D. John Adams'], 'answer': 'B'},
+            {'question': 'In which year did World War II end?', 'options': ['A. 1945', 'B. 1939', 'C. 1941', 'D. 1943'], 'answer': 'A'}
+        ],
+        'general knowledge': [
+            {'question': 'What is the capital of France?', 'options': ['A. London', 'B. Paris', 'C. Berlin', 'D. Madrid'], 'answer': 'B'},
+            {'question': 'How many continents are there?', 'options': ['A. 5', 'B. 6', 'C. 7', 'D. 8'], 'answer': 'C'}
+        ]
+    }
+    quiz = questions.get(topic, [])
+    score = 0
+    for q in quiz:
+        print(q['question'])
+        for option in q['options']:
+            print(option)
+        answer = input('Your answer (A/B/C/D): ').upper()
+        if answer == q['answer']:
+            print('Correct!')
+            score += 1
+        else:
+            print('Wrong!')
+    print(f'\nYour score: {score}/{len(quiz)}')
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    fact = fetch_fact(topic)
+    print(f'\nHere is a random fact about {topic}:\n{fact}')
+    conduct_quiz(topic)
+
+if __name__ == '__main__':
+    main()
