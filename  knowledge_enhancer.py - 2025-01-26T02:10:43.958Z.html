@@ -1,0 +1,57 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding API endpoints or facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to display menu and get user's choice
+def display_menu():
+    print('Welcome to Knowledge Enhancer!')
+    print('Please select a topic to learn more about:')
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f'{i}. {topic.capitalize()}')
+    choice = int(input('Enter your choice (number): '))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to fetch and display a random fact
+def display_fact(topic):
+    url = TOPICS[topic]
+    response = requests.get(url)
+    if response.status_code == 200:
+        fact = response.json()['fact']
+        print(f'Here is a random fact about {topic}: {fact}')
+    else:
+        print('Failed to fetch a fact. Please try again later.')
+
+# Function to conduct a quiz
+def conduct_quiz(topic):
+    print(f'Let\'s test your knowledge about {topic}!')
+    # This is a placeholder. In a real scenario, you would fetch questions from an API or database.
+    questions = [
+        {'question': 'What is the powerhouse of the cell?', 'options': ['Nucleus', 'Mitochondria', 'Ribosome', 'Endoplasmic Reticulum'], 'answer': 'Mitochondria'},
+        {'question': 'Who invented the telephone?', 'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Guglielmo Marconi'], 'answer': 'Alexander Graham Bell'}
+    ]
+    random.shuffle(questions)
+    for q in questions:
+        print(q['question'])
+        for i, option in enumerate(q['options'], 1):
+            print(f'{i}. {option}')
+        user_answer = int(input('Your answer (number): '))
+        if q['options'][user_answer-1] == q['answer']:
+            print('Correct!')
+        else:
+            print(f'Wrong! The correct answer is {q['answer']}')
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    display_fact(topic)
+    conduct_quiz(topic)
+
+if __name__ == '__main__':
+    main()
