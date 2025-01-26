@@ -1,0 +1,44 @@
+import requests
+import random
+
+# Define a dictionary to hold the topics and their corresponding API endpoints or data
+TOPICS = {
+    'science': 'https://science-facts-api.herokuapp.com/api/v1/facts',
+    'technology': 'https://tech-facts-api.herokuapp.com/api/v1/facts',
+    'history': 'https://history-facts-api.herokuapp.com/api/v1/facts',
+    'general_knowledge': 'https://general-facts-api.herokuapp.com/api/v1/facts'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter your choice (1-4): "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.capitalize()}!")
+    # This is a placeholder for the quiz logic. In a real application, you would fetch questions from an API or database.
+    print("Quiz functionality is under development. Stay tuned!")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    fact = fetch_fact(topic)
+    print(f"\nHere's a random fact about {topic.capitalize()}:\n{fact}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
