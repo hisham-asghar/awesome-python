@@ -1,0 +1,56 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-knowledge-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to generate a quiz question based on the fetched fact
+def generate_quiz(fact):
+    # This is a placeholder. In a real scenario, you would parse the fact to generate a relevant question.
+    question = "What is the main subject of the fact you just read?"
+    options = ["Option 1", "Option 2", "Option 3", "Option 4"]
+    correct_answer = random.choice(options)
+    return question, options, correct_answer
+
+# Main function to run the interactive knowledge increase script
+def main():
+    print("Welcome to the Interactive Knowledge Increase Script!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    selection = int(input("Enter the number of your choice: ")) - 1
+    selected_topic = list(TOPICS.keys())[selection]
+    print(f"\nYou selected: {selected_topic.title()}")
+    
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}:\n{fact}")
+    
+    question, options, correct_answer = generate_quiz(fact)
+    print("\nNow, let's test your knowledge with a quick quiz!")
+    print(f"Question: {question}")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: ")) - 1
+    
+    if options[answer] == correct_answer:
+        print("\nCorrect! You're doing great!")
+    else:
+        print(f"\nIncorrect. The correct answer was: {correct_answer}")
+    
+    print("\nThank you for using the Interactive Knowledge Increase Script!")
+
+if __name__ == "__main__":
+    main()
