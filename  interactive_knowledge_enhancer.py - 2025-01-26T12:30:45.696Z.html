@@ -1,0 +1,48 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct an interactive quiz
+def interactive_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic} with a quick quiz!")
+    # This is a placeholder for the quiz logic. In a real implementation, you would fetch or define questions related to the topic.
+    print("Question: What is the capital of France?")
+    print("1. Paris\n2. London\n3. Berlin\n4. Madrid")
+    answer = input("Your answer (1-4): ")
+    if answer == '1':
+        print("Correct! Paris is the capital of France.")
+    else:
+        print("Incorrect. The correct answer is Paris.")
+
+# Main function to run the script
+def main():
+    topic = display_menu()
+    print(f"\nHere's a random fact about {topic}:\n{fetch_fact(topic)}")
+    interactive_quiz(topic)
+
+if __name__ == "__main__":
+    main()
