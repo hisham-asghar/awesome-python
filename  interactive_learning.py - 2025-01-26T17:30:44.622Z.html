@@ -1,0 +1,55 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or data
+TOPICS = {
+    'science': 'https://api.example.com/science',
+    'technology': 'https://api.example.com/technology',
+    'history': 'https://api.example.com/history',
+    'general knowledge': 'https://api.example.com/general'
+}
+
+# Function to fetch a random fact or concept from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        data = response.json()
+        return random.choice(data['facts'])
+    else:
+        return "Failed to fetch data. Please try again later."
+
+# Function to fetch a quiz question from the selected topic
+def fetch_quiz(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        data = response.json()
+        return random.choice(data['quizzes'])
+    else:
+        return "Failed to fetch quiz. Please try again later."
+
+# Main function to run the interactive learning script
+def main():
+    print("Welcome to the Interactive Learning Script!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(TOPICS.keys())[choice-1]
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(topic)
+    print(f"\nHere's a random fact about {topic}:\n{fact}")
+    
+    # Fetch and conduct a quiz
+    quiz = fetch_quiz(topic)
+    print(f"\nLet's test your knowledge with a quiz!\nQuestion: {quiz['question']}")
+    for i, option in enumerate(quiz['options'], 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if quiz['options'][answer-1] == quiz['answer']:
+        print("Correct! Well done!")
+    else:
+        print(f"Sorry, the correct answer was: {quiz['answer']}")
+
+if __name__ == "__main__":
+    main()
