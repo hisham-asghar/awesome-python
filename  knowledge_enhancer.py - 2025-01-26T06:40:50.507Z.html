@@ -1,0 +1,81 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    if topic == 'science':
+        url = 'https://science-facts-api.herokuapp.com/api/facts'
+    elif topic == 'technology':
+        url = 'https://tech-facts-api.herokuapp.com/api/facts'
+    elif topic == 'history':
+        url = 'https://history-facts-api.herokuapp.com/api/facts'
+    else:
+        url = 'https://general-facts-api.herokuapp.com/api/facts'
+    response = requests.get(url)
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return 'Failed to fetch a fact. Please try again later.'
+
+# Define a function to display the menu and get user's choice
+def display_menu():
+    print('Welcome to the Knowledge Enhancer!')
+    print('Please select a topic:')
+    print('1. Science')
+    print('2. Technology')
+    print('3. History')
+    print('4. General Knowledge')
+    choice = input('Enter your choice (1-4): ')
+    return choice
+
+# Define a function to conduct a quiz
+def conduct_quiz(topic):
+    print('Let\'s test your knowledge with a quick quiz!')
+    # This is a placeholder for quiz questions. In a real application, you would fetch these from an API or database.
+    quiz_questions = {
+        'science': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['H2O', 'CO2', 'NaCl', 'O2'], 'answer': 'H2O'},
+            {'question': 'What planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+        ],
+        'technology': [
+            {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'], 'answer': 'Central Processing Unit'},
+            {'question': 'Which programming language is known for its use in web development?', 'options': ['Python', 'Java', 'HTML', 'C++'], 'answer': 'HTML'}
+        ],
+        'history': [
+            {'question': 'Who was the first President of the United States?', 'options': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+            {'question': 'In which year did World War II end?', 'options': ['1945', '1939', '1941', '1943'], 'answer': '1945'}
+        ],
+        'general knowledge': [
+            {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'How many continents are there?', 'options': ['5', '6', '7', '8'], 'answer': '7'}
+        ]
+    }
+    questions = quiz_questions.get(topic, [])
+    score = 0
+    for question in questions:
+        print(question['question'])
+        for i, option in enumerate(question['options'], 1):
+            print(f'{i}. {option}')
+        answer = input('Your answer (1-4): ')
+        if question['options'][int(answer) - 1] == question['answer']:
+            print('Correct!')
+            score += 1
+        else:
+            print('Incorrect.')
+    print(f'Your final score is {score}/{len(questions)}')
+
+# Main function to run the program
+def main():
+    choice = display_menu()
+    topics = ['science', 'technology', 'history', 'general knowledge']
+    if choice in ['1', '2', '3', '4']:
+        topic = topics[int(choice) - 1]
+        fact = fetch_fact(topic)
+        print(f'Here\'s a random fact about {topic}: {fact}')
+        conduct_quiz(topic)
+    else:
+        print('Invalid choice. Please run the program again.')
+
+if __name__ == '__main__':
+    main()
