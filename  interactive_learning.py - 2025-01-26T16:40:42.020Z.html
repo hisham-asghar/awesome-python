@@ -1,0 +1,45 @@
+import requests
+import random
+
+# Define a dictionary with topics and their corresponding API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-knowledge-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    url = TOPICS[topic]
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to display a menu and get user's choice
+def display_menu():
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"Let's test your knowledge on {topic}!")
+    # Placeholder for quiz logic
+    # This would involve fetching questions from an API or a predefined list
+    # and presenting them to the user with multiple-choice options
+    print("Quiz functionality to be implemented.")
+
+# Main function to run the interactive learning script
+def main():
+    topic = display_menu()
+    fact = fetch_fact(topic)
+    print(f"Here's a random fact about {topic}: {fact}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
