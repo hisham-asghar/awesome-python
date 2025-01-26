@@ -1,0 +1,62 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-knowledge-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz based on the selected topic
+def generate_quiz(topic):
+    # Placeholder for quiz generation logic
+    # This would involve fetching questions from an API or a predefined list
+    # and presenting them as multiple-choice questions
+    return [
+        {
+            'question': 'What is the capital of France?',
+            'options': ['Paris', 'London', 'Berlin', 'Madrid'],
+            'answer': 'Paris'
+        }
+    ]
+
+# Main function to run the interactive knowledge app
+def main():
+    print("Welcome to the Interactive Knowledge App!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    
+    selection = input("Enter the number of your choice: ")
+    selected_topic = list(TOPICS.keys())[int(selection) - 1]
+    
+    print(f"\nHere's a random fact about {selected_topic}:")
+    fact = fetch_fact(selected_topic)
+    print(fact)
+    
+    print("\nNow, let's test your knowledge with a quick quiz!")
+    quiz = generate_quiz(selected_topic)
+    for question in quiz:
+        print(f"\n{question['question']}")
+        for i, option in enumerate(question['options'], 1):
+            print(f"{i}. {option}")
+        answer = input("Your answer (enter the number): ")
+        if question['options'][int(answer) - 1] == question['answer']:
+            print("Correct!")
+        else:
+            print(f"Wrong! The correct answer is: {question['answer']}")
+    
+    print("\nThank you for using the Interactive Knowledge App!")
+
+if __name__ == "__main__":
+    main()
