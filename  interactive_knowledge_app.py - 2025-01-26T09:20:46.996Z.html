@@ -1,0 +1,61 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    # Example API endpoint (replace with a real one)
+    url = f'https://api.example.com/facts?topic={topic}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return "Unable to fetch a fact at this time."
+
+# Define a function to fetch quiz questions from an API
+def fetch_quiz_questions(topic):
+    # Example API endpoint (replace with a real one)
+    url = f'https://api.example.com/quiz?topic={topic}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return []
+
+# Main function to run the interactive knowledge app
+def main():
+    print("Welcome to the Interactive Knowledge App!")
+    topics = ['Science', 'Technology', 'History', 'General Knowledge']
+    while True:
+        print("\nPlease select a topic:")
+        for i, topic in enumerate(topics, 1):
+            print(f"{i}. {topic}")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '5':
+            print("Thank you for using the Interactive Knowledge App. Goodbye!")
+            break
+        elif choice in ['1', '2', '3', '4']:
+            topic = topics[int(choice) - 1]
+            print(f"\nYou selected {topic}. Here's a random fact:")
+            fact = fetch_fact(topic)
+            print(fact)
+            print("\nNow, let's test your knowledge with a quiz!")
+            questions = fetch_quiz_questions(topic)
+            if questions:
+                for question in questions:
+                    print(f"\n{question['question']}")
+                    for i, option in enumerate(question['options'], 1):
+                        print(f"{i}. {option}")
+                    answer = input("Your answer (number): ")
+                    if answer == str(question['answer']):
+                        print("Correct!")
+                    else:
+                        print(f"Wrong! The correct answer is {question['answer']}: {question['options'][question['answer']-1]}")
+            else:
+                print("No quiz questions available for this topic at the moment.")
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
