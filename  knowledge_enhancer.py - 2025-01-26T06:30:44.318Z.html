@@ -1,0 +1,62 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding APIs or data
+TOPICS = {
+    'science': 'https://science-facts-api.herokuapp.com/api/facts',
+    'technology': 'https://tech-facts-api.herokuapp.com/api/facts',
+    'history': 'https://history-facts-api.herokuapp.com/api/facts',
+    'general knowledge': 'https://general-facts-api.herokuapp.com/api/facts'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return "Failed to fetch facts. Please try again later."
+
+# Function to display the main menu
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    print(f"{len(TOPICS) + 1}. Exit")
+
+# Function to conduct a quiz
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic}!")
+    fact = fetch_fact(topic)
+    print(f"\nDid you know? {fact['fact']}")
+    # Assuming the fact object contains a 'question' and 'options' for the quiz
+    if 'question' in fact and 'options' in fact:
+        print(f"\nQuestion: {fact['question']}")
+        for i, option in enumerate(fact['options'], 1):
+            print(f"{i}. {option}")
+        answer = input("Your answer (number): ")
+        if answer == fact['answer']:
+            print("Correct! Well done!")
+        else:
+            print(f"Sorry, the correct answer was: {fact['options'][int(fact['answer'])-1]}")
+    else:
+        print("No quiz available for this fact.")
+
+# Main function to run the program
+def main():
+    while True:
+        display_menu()
+        choice = input("Enter your choice: ")
+        if choice.isdigit() and int(choice) in range(1, len(TOPICS) + 2):
+            if int(choice) == len(TOPICS) + 1:
+                print("Thank you for using Knowledge Enhancer. Goodbye!")
+                break
+            topic = list(TOPICS.keys())[int(choice) - 1]
+            conduct_quiz(topic)
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
