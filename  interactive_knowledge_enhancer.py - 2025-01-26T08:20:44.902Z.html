@@ -1,0 +1,59 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    url = f"https://api.facts.com/{topic}/random"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Unable to fetch a fact at this time."
+
+# Define a function to fetch quiz questions from an API
+def fetch_quiz_questions(topic):
+    url = f"https://api.quiz.com/{topic}/questions"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['questions']
+    else:
+        return []
+
+# Main function to interact with the user
+def main():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic:")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+    choice = input("Enter your choice (1-4): ")
+    
+    topics = ['science', 'technology', 'history', 'general_knowledge']
+    selected_topic = topics[int(choice) - 1]
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}: {fact}")
+    
+    # Fetch and conduct a quiz
+    questions = fetch_quiz_questions(selected_topic)
+    if questions:
+        print("\nLet's test your knowledge with a quick quiz!")
+        score = 0
+        for question in questions:
+            print(f"\n{question['question']}")
+            for i, option in enumerate(question['options']):
+                print(f"{i + 1}. {option}")
+            answer = input("Your answer (1-4): ")
+            if int(answer) == question['correct_option'] + 1:
+                print("Correct!")
+                score += 1
+            else:
+                print("Wrong!")
+        print(f"\nYour final score is {score}/{len(questions)}")
+    else:
+        print("\nNo quiz questions available for this topic at the moment.")
+
+if __name__ == "__main__":
+    main()
