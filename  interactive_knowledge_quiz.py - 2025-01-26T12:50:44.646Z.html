@@ -1,0 +1,51 @@
+import requests
+import random
+
+# Define the topics and their corresponding APIs or data sources
+topics = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(topics[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch fact. Please try again."
+
+# Function to generate a quiz question based on the fetched fact
+def generate_quiz(fact):
+    # This is a placeholder. In a real application, you would generate a question based on the fact.
+    question = "What is the main subject of the following fact?"
+    options = ["Option 1", "Option 2", "Option 3", "Option 4"]
+    correct_answer = "Option 1"  # This should be determined based on the fact
+    return question, options, correct_answer
+
+# Main function to run the interactive knowledge quiz
+def main():
+    print("Welcome to the Interactive Knowledge Quiz!")
+    print("Please select a topic:")
+    for i, topic in enumerate(topics.keys(), 1):
+        print(f"{i}. {topic}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(topics.keys())[choice - 1]
+    print(f"\nYou selected {topic}. Here's a random fact:")
+    fact = fetch_fact(topic)
+    print(fact)
+    question, options, correct_answer = generate_quiz(fact)
+    print("\nNow, let's test your knowledge with a quiz:")
+    print(question)
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if options[answer - 1] == correct_answer:
+        print("Correct!")
+    else:
+        print(f"Incorrect. The correct answer is {correct_answer}.")
+
+if __name__ == "__main__":
+    main()
