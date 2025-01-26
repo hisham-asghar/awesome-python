@@ -1,0 +1,56 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or predefined facts
+topics = {
+    'science': 'https://api.sciencefacts.org/random',
+    'technology': 'https://api.techfacts.org/random',
+    'history': 'https://api.historyfacts.org/random',
+    'general knowledge': 'https://api.generalfacts.org/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(topics[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz question based on the fetched fact
+def generate_quiz(fact):
+    # This is a placeholder. In a real scenario, you would parse the fact and generate relevant questions.
+    questions = {
+        'question': 'What is the main subject of the fact?',
+        'options': ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        'answer': 'Option 1'
+    }
+    return questions
+
+# Main function to run the interactive knowledge increase script
+def main():
+    print("Welcome to the Interactive Knowledge Increase Script!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(topics.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    selected_topic = list(topics.keys())[choice - 1]
+    print(f"\nYou selected: {selected_topic.title()}")
+    
+    # Fetch and display a random fact
+    fact = fetch_fact(selected_topic)
+    print(f"\nHere's a random fact about {selected_topic}:\n{fact}")
+    
+    # Generate and display a quiz question
+    quiz = generate_quiz(fact)
+    print(f"\nQuiz Time!\n{quiz['question']}")
+    for i, option in enumerate(quiz['options'], 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if quiz['options'][answer - 1] == quiz['answer']:
+        print("Correct! You're doing great.")
+    else:
+        print(f"Sorry, the correct answer was: {quiz['answer']}")
+
+if __name__ == "__main__":
+    main()
