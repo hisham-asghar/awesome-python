@@ -1,0 +1,59 @@
+import requests
+import random
+
+# Define the topics and their corresponding APIs or data sources
+topics = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(topics[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz based on the selected topic
+def generate_quiz(topic):
+    # This is a placeholder for the quiz generation logic
+    # In a real implementation, you would fetch questions from an API or database
+    questions = [
+        {
+            'question': 'What is the capital of France?',
+            'options': ['Paris', 'London', 'Berlin', 'Madrid'],
+            'answer': 'Paris'
+        },
+        {
+            'question': 'Who invented the telephone?',
+            'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Guglielmo Marconi'],
+            'answer': 'Alexander Graham Bell'
+        }
+    ]
+    return random.choice(questions)
+
+# Main menu function
+def main_menu():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(topics.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(topics.keys())[choice - 1]
+    print(f"\nHere's a random fact about {topic}:\n{fetch_fact(topic)}")
+    quiz = generate_quiz(topic)
+    print("\nNow, let's test your knowledge with a quick quiz!")
+    print(quiz['question'])
+    for i, option in enumerate(quiz['options'], 1):
+        print(f"{i}. {option}")
+    answer = int(input("Enter the number of your answer: "))
+    if quiz['options'][answer - 1] == quiz['answer']:
+        print("Correct! Great job!")
+    else:
+        print(f"Sorry, the correct answer was {quiz['answer']}.")
+
+if __name__ == "__main__":
+    main_menu()
