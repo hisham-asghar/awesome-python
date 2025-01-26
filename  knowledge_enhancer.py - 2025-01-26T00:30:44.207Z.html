@@ -1,0 +1,56 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding API endpoints or facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.capitalize()}")
+    choice = int(input("Enter your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic} with a quick quiz!")
+    # Placeholder for quiz questions and answers
+    quiz = {
+        'question': 'What is the capital of France?',
+        'options': ['A. Paris', 'B. London', 'C. Berlin', 'D. Madrid'],
+        'answer': 'A'
+    }
+    print(quiz['question'])
+    for option in quiz['options']:
+        print(option)
+    user_answer = input("Your answer: ").upper()
+    if user_answer == quiz['answer']:
+        print("Correct!")
+    else:
+        print(f"Wrong! The correct answer is {quiz['answer']}.")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    print(f"\nHere's a random fact about {topic}: ")
+    fact = fetch_fact(topic)
+    print(fact)
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
