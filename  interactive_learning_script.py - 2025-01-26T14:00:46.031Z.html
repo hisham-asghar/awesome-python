@@ -1,0 +1,53 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Please select a topic to learn about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.title()}!")
+    # This is a placeholder for the quiz logic. In a real application, you would fetch questions from an API or database.
+    print("Here's a sample question: What is the powerhouse of the cell?")
+    print("A. Mitochondria\nB. Nucleus\nC. Ribosome\nD. Endoplasmic Reticulum")
+    answer = input("Your answer (A/B/C/D): ").upper()
+    if answer == "A":
+        print("Correct!")
+    else:
+        print("Incorrect. The correct answer is A. Mitochondria.")
+
+# Main function to run the interactive learning script
+def main():
+    print("Welcome to the Interactive Learning Script!")
+    while True:
+        topic = display_menu()
+        fact = fetch_fact(topic)
+        print(f"\nHere's a fact about {topic.title()}: {fact}")
+        conduct_quiz(topic)
+        if input("\nDo you want to learn about another topic? (yes/no): ").lower() != 'yes':
+            break
+    print("Thank you for using the Interactive Learning Script!")
+
+if __name__ == "__main__":
+    main()
