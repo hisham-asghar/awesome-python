@@ -1,0 +1,92 @@
+import random
+import requests
+
+# Define a simple database of facts and quizzes
+facts_db = {
+    'science': [
+        'The heart of a shrimp is located in its head.',
+        'A day on Venus is longer than a year on Venus.',
+        'Bananas are berries, but strawberries aren\'t.'
+    ],
+    'technology': [
+        'The first computer mouse was made of wood.',
+        'The original name of Windows was Interface Manager.',
+        'The first website is still online at http://info.cern.ch.'
+    ],
+    'history': [
+        'The Great Wall of China is not a single wall but a series of walls and fortifications.',
+        'Cleopatra lived closer to the invention of the iPhone than to the construction of the Great Pyramid.',
+        'The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.'
+    ],
+    'general knowledge': [
+        'Octopuses have three hearts.',
+        'Wombat feces are cube-shaped.',
+        'The shortest war in history lasted 38 to 45 minutes.'
+    ]
+}
+
+quizzes_db = {
+    'science': [
+        {'question': 'What is the largest organ in the human body?', 'options': ['Heart', 'Skin', 'Liver', 'Brain'], 'answer': 'Skin'},
+        {'question': 'Which planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+    ],
+    'technology': [
+        {'question': 'What does \'HTTP\' stand for?', 'options': ['HyperText Transfer Protocol', 'HyperText Transmission Protocol', 'High Transfer Text Protocol', 'High Transmission Text Protocol'], 'answer': 'HyperText Transfer Protocol'},
+        {'question': 'Which company developed the first commercially available computer?', 'options': ['IBM', 'Apple', 'Microsoft', 'Commodore'], 'answer': 'IBM'}
+    ],
+    'history': [
+        {'question': 'Who was the first President of the United States?', 'options': ['Thomas Jefferson', 'George Washington', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+        {'question': 'In which year did the Titanic sink?', 'options': ['1910', '1912', '1914', '1916'], 'answer': '1912'}
+    ],
+    'general knowledge': [
+        {'question': 'What is the capital of France?', 'options': ['London', 'Paris', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+        {'question': 'How many continents are there?', 'options': ['5', '6', '7', '8'], 'answer': '7'}
+    ]
+}
+
+def fetch_fact(topic):
+    if topic in facts_db:
+        return random.choice(facts_db[topic])
+    else:
+        return 'Topic not found.'
+
+def fetch_quiz(topic):
+    if topic in quizzes_db:
+        return random.choice(quizzes_db[topic])
+    else:
+        return None
+
+def main():
+    print('Welcome to the Interactive Knowledge Enhancer!')
+    while True:
+        print('\nPlease select a topic:')
+        print('1. Science')
+        print('2. Technology')
+        print('3. History')
+        print('4. General Knowledge')
+        print('5. Exit')
+        choice = input('Enter your choice: ')
+        if choice == '5':
+            print('Thank you for using the Interactive Knowledge Enhancer. Goodbye!')
+            break
+        topics = ['science', 'technology', 'history', 'general knowledge']
+        if choice in ['1', '2', '3', '4']:
+            topic = topics[int(choice) - 1]
+            print('\nHere\'s a random fact about ' + topic + ':')
+            print(fetch_fact(topic))
+            quiz = fetch_quiz(topic)
+            if quiz:
+                print('\nNow, let\'s test your knowledge with a quiz!')
+                print(quiz['question'])
+                for i, option in enumerate(quiz['options'], 1):
+                    print(f'{i}. {option}')
+                answer = input('Your answer (enter the number): ')
+                if quiz['options'][int(answer) - 1] == quiz['answer']:
+                    print('Correct! Well done.')
+                else:
+                    print('Incorrect. The correct answer is:', quiz['answer'])
+        else:
+            print('Invalid choice. Please try again.')
+
+if __name__ == '__main__':
+    main()
