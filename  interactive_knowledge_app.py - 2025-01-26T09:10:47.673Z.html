@@ -1,0 +1,64 @@
+import requests
+import random
+
+# Define the topics and their corresponding API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz based on the selected topic
+def generate_quiz(topic):
+    # This is a placeholder for the quiz generation logic
+    # In a real implementation, you would fetch or generate questions related to the topic
+    questions = [
+        {
+            'question': 'What is the capital of France?',
+            'options': ['Paris', 'London', 'Berlin', 'Madrid'],
+            'answer': 'Paris'
+        },
+        {
+            'question': 'Who invented the telephone?',
+            'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Albert Einstein'],
+            'answer': 'Alexander Graham Bell'
+        }
+    ]
+    return random.choice(questions)
+
+# Main function to run the interactive knowledge app
+def main():
+    print("Welcome to the Interactive Knowledge App!")
+    print("Please select a topic to learn more about:")
+    for topic in TOPICS:
+        print(f"- {topic}")
+    selected_topic = input("\nEnter your choice: ").lower()
+    
+    if selected_topic in TOPICS:
+        fact = fetch_fact(selected_topic)
+        print(f"\nHere's a random fact about {selected_topic}:\n{fact}")
+        
+        quiz = generate_quiz(selected_topic)
+        print("\nLet's test your knowledge with a quick quiz!")
+        print(quiz['question'])
+        for i, option in enumerate(quiz['options'], 1):
+            print(f"{i}. {option}")
+        user_answer = input("\nEnter the number of your answer: ")
+        if quiz['options'][int(user_answer)-1] == quiz['answer']:
+            print("Correct! Well done.")
+        else:
+            print(f"Incorrect. The correct answer is: {quiz['answer']}")
+    else:
+        print("Invalid topic selected. Please try again.")
+
+if __name__ == "__main__":
+    main()
