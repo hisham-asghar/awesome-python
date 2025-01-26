@@ -1,0 +1,58 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their corresponding API endpoints or facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Unable to fetch a fact at the moment. Please try again later.'
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print('Please select a topic to learn more about:')
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f'{i}. {topic.title()}')
+    choice = int(input('Enter the number of your choice: '))
+    return list(TOPICS.keys())[choice - 1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    # This is a placeholder for the quiz logic. In a real application, you would fetch questions from an API or a database.
+    print(f'\nLet\'s test your knowledge on {topic}!')
+    # Example question
+    question = 'What is the capital of France?'
+    options = ['A. Paris', 'B. London', 'C. Berlin', 'D. Madrid']
+    correct_answer = 'A'
+    print(question)
+    for option in options:
+        print(option)
+    user_answer = input('Your answer (A/B/C/D): ').upper()
+    if user_answer == correct_answer:
+        print('Correct!')
+    else:
+        print(f'Sorry, the correct answer is {correct_answer}.')
+
+# Main function to run the interactive learning script
+def main():
+    print('Welcome to the Interactive Learning Script!')
+    while True:
+        topic = display_menu()
+        fact = fetch_fact(topic)
+        print(f'\nHere\'s a random fact about {topic}:\n{fact}')
+        conduct_quiz(topic)
+        if input('\nDo you want to learn more? (yes/no): ').lower() != 'yes':
+            print('Thank you for using the Interactive Learning Script. Goodbye!')
+            break
+
+if __name__ == '__main__':
+    main()
