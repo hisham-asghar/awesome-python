@@ -1,0 +1,58 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter your choice (number): "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.title()}!")
+    # Fetch a fact to base the quiz on
+    fact = fetch_fact(topic)
+    print(f"Here's a fact: {fact}")
+    # Simulate a multiple-choice question based on the fact
+    # Note: In a real application, you would fetch or generate relevant questions
+    print("\nWhat is the significance of this fact?")
+    print("1. It's a common misconception.")
+    print("2. It highlights a major scientific breakthrough.")
+    print("3. It's a historical event that changed the world.")
+    print("4. It's a fun fact with no significant impact.")
+    answer = int(input("Your answer (number): "))
+    # Provide feedback based on the answer
+    if answer == 2:
+        print("Correct! This fact indeed highlights a major breakthrough.")
+    else:
+        print("Incorrect. The correct answer highlights a major breakthrough.")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    print(f"\nYou selected: {topic.title()}")
+    fact = fetch_fact(topic)
+    print(f"\nHere's a random fact about {topic}: {fact}")
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
