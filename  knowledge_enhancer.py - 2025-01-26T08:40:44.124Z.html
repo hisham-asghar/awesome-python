@@ -1,0 +1,59 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to display the menu and get user's choice
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter your choice: "))
+    return list(TOPICS.keys())[choice-1]
+
+# Function to conduct a quiz on the selected topic
+def conduct_quiz(topic):
+    print(f"\nLet's test your knowledge on {topic.title()}!")
+    # Fetch a fact to base the quiz on
+    fact = fetch_fact(topic)
+    print(f"Here's a fact: {fact}")
+    # Generate a simple multiple-choice question
+    # Note: In a real application, you would fetch or generate questions dynamically
+    print("\nWhat is the main subject of this fact?")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+    answer = int(input("Enter your answer (1-4): "))
+    # Check the answer
+    correct_answer = list(TOPICS.keys()).index(topic) + 1
+    if answer == correct_answer:
+        print("Correct!")
+    else:
+        print(f"Incorrect. The correct answer is {correct_answer}.")
+
+# Main function to run the program
+def main():
+    topic = display_menu()
+    print(f"\nYou selected {topic.title()}. Here's a random fact:")
+    fact = fetch_fact(topic)
+    print(fact)
+    conduct_quiz(topic)
+
+if __name__ == "__main__":
+    main()
