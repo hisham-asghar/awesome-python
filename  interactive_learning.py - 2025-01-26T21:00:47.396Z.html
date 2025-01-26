@@ -1,0 +1,51 @@
+import requests
+import random
+
+# Define a dictionary of topics with their respective API endpoints or predefined facts
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general knowledge': 'https://general-knowledge-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    if topic in TOPICS:
+        response = requests.get(TOPICS[topic])
+        if response.status_code == 200:
+            return response.json()['fact']
+    return "Unable to fetch a fact at the moment. Please try again later."
+
+# Function to display a menu and allow the user to select a topic
+def select_topic():
+    print("Please select a topic to learn more about:")
+    for i, topic in enumerate(TOPICS.keys(), 1):
+        print(f"{i}. {topic.title()}")
+    choice = int(input("Enter the number of your choice: "))
+    topic = list(TOPICS.keys())[choice-1]
+    return topic
+
+# Function to conduct an interactive quiz
+def quiz(topic):
+    print(f"Let's test your knowledge on {topic}!")
+    # This is a placeholder for quiz logic. In a real application, you would fetch questions from an API or database.
+    print("Question: What is the powerhouse of the cell?")
+    print("1. Nucleus")
+    print("2. Mitochondria")
+    print("3. Ribosome")
+    print("4. Endoplasmic Reticulum")
+    answer = input("Your answer (1-4): ")
+    if answer == "2":
+        print("Correct!")
+    else:
+        print("Incorrect. The correct answer is Mitochondria.")
+
+# Main function to run the interactive learning script
+def main():
+    topic = select_topic()
+    print(f"\nHere's a random fact about {topic}:\n{fetch_fact(topic)}\n")
+    quiz(topic)
+
+if __name__ == "__main__":
+    main()
