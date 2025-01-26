@@ -1,0 +1,64 @@
+import requests
+import random
+
+# Define a simple menu for topic selection
+def display_menu():
+    print("Welcome to Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    print("1. Science")
+    print("2. Technology")
+    print("3. History")
+    print("4. General Knowledge")
+
+# Function to fetch a random fact from an API
+def fetch_fact(topic):
+    if topic == 'science':
+        url = 'https://science-facts-api.herokuapp.com/api/facts/random'
+    elif topic == 'technology':
+        url = 'https://tech-facts-api.herokuapp.com/api/facts/random'
+    elif topic == 'history':
+        url = 'https://history-facts-api.herokuapp.com/api/facts/random'
+    elif topic == 'general knowledge':
+        url = 'https://general-facts-api.herokuapp.com/api/facts/random'
+    else:
+        return "Invalid topic selected."
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to conduct a quiz based on the selected topic
+def conduct_quiz(topic):
+    # This is a placeholder for the quiz logic
+    # In a real implementation, you would fetch questions from an API or a database
+    print(f"Let's test your knowledge on {topic}!")
+    print("Here's a question for you:")
+    # Example question
+    question = "What is the capital of France?"
+    options = ["A. Paris", "B. London", "C. Berlin", "D. Madrid"]
+    print(question)
+    for option in options:
+        print(option)
+    answer = input("Your answer (A/B/C/D): ")
+    if answer.upper() == 'A':
+        print("Correct!")
+    else:
+        print("Incorrect! The correct answer is A. Paris.")
+
+# Main function to run the program
+def main():
+    display_menu()
+    choice = input("Enter your choice (1-4): ")
+    topics = ['science', 'technology', 'history', 'general knowledge']
+    if choice.isdigit() and 1 <= int(choice) <= 4:
+        topic = topics[int(choice) - 1]
+        print(f"You selected: {topic}")
+        fact = fetch_fact(topic)
+        print(f"Here's a random fact about {topic}: {fact}")
+        conduct_quiz(topic)
+    else:
+        print("Invalid choice. Please run the program again.")
+
+if __name__ == "__main__":
+    main()
