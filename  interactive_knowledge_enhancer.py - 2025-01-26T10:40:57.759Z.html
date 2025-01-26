@@ -1,0 +1,68 @@
+import requests
+import random
+
+# Define a dictionary to hold topics and their respective API endpoints or data
+TOPICS = {
+    'science': 'https://science-facts-api.com/random',
+    'technology': 'https://tech-facts-api.com/random',
+    'history': 'https://history-facts-api.com/random',
+    'general_knowledge': 'https://general-facts-api.com/random'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again."
+
+# Function to generate a quiz based on the selected topic
+def generate_quiz(topic):
+    # This is a placeholder. In a real scenario, you would fetch quiz questions from an API or database
+    quizzes = {
+        'science': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['H2O', 'CO2', 'NaCl', 'O2'], 'answer': 'H2O'},
+            {'question': 'What planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+        ],
+        'technology': [
+            {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'], 'answer': 'Central Processing Unit'},
+            {'question': 'Which company developed the Python programming language?', 'options': ['Google', 'Microsoft', 'Python Software Foundation', 'Oracle'], 'answer': 'Python Software Foundation'}
+        ],
+        'history': [
+            {'question': 'In which year did World War II end?', 'options': ['1945', '1939', '1941', '1943'], 'answer': '1945'},
+            {'question': 'Who was the first President of the United States?', 'options': ['Thomas Jefferson', 'George Washington', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'}
+        ],
+        'general_knowledge': [
+            {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'How many continents are there?', 'options': ['5', '6', '7', '8'], 'answer': '7'}
+        ]
+    }
+    return random.choice(quizzes[topic])
+
+# Main function to interact with the user
+def main():
+    print("Welcome to the Interactive Knowledge Enhancer!")
+    print("Please select a topic to learn more about:")
+    for topic in TOPICS:
+        print(f"- {topic.capitalize()}")
+    selected_topic = input("\nEnter your choice: ").lower()
+    
+    if selected_topic in TOPICS:
+        fact = fetch_fact(selected_topic)
+        print(f"\nHere's a random fact about {selected_topic}: {fact}")
+        
+        quiz = generate_quiz(selected_topic)
+        print(f"\nNow, let's test your knowledge with a quiz!\nQuestion: {quiz['question']}")
+        for i, option in enumerate(quiz['options'], 1):
+            print(f"{i}. {option}")
+        answer = input("Your answer (1-4): ")
+        if quiz['options'][int(answer)-1] == quiz['answer']:
+            print("Correct!")
+        else:
+            print(f"Wrong! The correct answer is: {quiz['answer']}")
+    else:
+        print("Invalid topic selected. Please try again.")
+
+if __name__ == "__main__":
+    main()
