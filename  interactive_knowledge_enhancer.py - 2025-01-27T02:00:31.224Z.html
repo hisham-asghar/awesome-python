@@ -1,0 +1,62 @@
+import streamlit as st
+import requests
+import random
+import matplotlib.pyplot as plt
+
+# Function to fetch random fact from an API
+def fetch_random_fact(topic):
+    url = f'https://api.example.com/facts?topic={topic}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Unable to fetch a fact at the moment.'
+
+# Function to generate a quiz question
+def generate_quiz_question(topic):
+    questions = {
+        'science': 'What is the chemical symbol for water?',
+        'technology': 'What does CPU stand for?',
+        'history': 'Who was the first president of the United States?',
+        'general knowledge': 'What is the capital of France?'
+    }
+    answers = {
+        'science': ['H2O', 'CO2', 'NaCl', 'O2'],
+        'technology': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'],
+        'history': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'],
+        'general knowledge': ['Paris', 'London', 'Berlin', 'Madrid']
+    }
+    correct_answer = {
+        'science': 'H2O',
+        'technology': 'Central Processing Unit',
+        'history': 'George Washington',
+        'general knowledge': 'Paris'
+    }
+    return questions[topic], answers[topic], correct_answer[topic]
+
+# Streamlit app
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    topic = st.sidebar.selectbox('Choose a topic', ['science', 'technology', 'history', 'general knowledge'])
+    
+    if st.sidebar.button('Learn a Random Fact'):
+        fact = fetch_random_fact(topic)
+        st.write(f'**Random Fact:** {fact}')
+    
+    if st.sidebar.button('Take a Quiz'):
+        question, options, correct = generate_quiz_question(topic)
+        st.write(f'**Quiz Question:** {question}')
+        answer = st.radio('Choose the correct answer:', options)
+        if st.button('Submit'):
+            if answer == correct:
+                st.success('Correct!')
+            else:
+                st.error('Incorrect. Try again!')
+    
+    if st.sidebar.button('Visualize Data'):
+        data = [random.randint(1, 100) for _ in range(10)]
+        plt.plot(data)
+        st.pyplot(plt)
+
+if __name__ == '__main__':
+    main()
