@@ -1,0 +1,81 @@
+import requests
+import random
+
+# Define a function to fetch a random fact from an API
+def fetch_fact(topic):
+    if topic == 'science':
+        url = 'https://science-facts-api.herokuapp.com/api/v1/facts/random'
+    elif topic == 'technology':
+        url = 'https://tech-facts-api.herokuapp.com/api/v1/facts/random'
+    elif topic == 'history':
+        url = 'https://history-facts-api.herokuapp.com/api/v1/facts/random'
+    elif topic == 'general knowledge':
+        url = 'https://general-knowledge-facts-api.herokuapp.com/api/v1/facts/random'
+    else:
+        return 'Invalid topic selected.'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Failed to fetch a fact.'
+
+# Define a function to display the menu and get user's choice
+def display_menu():
+    print('Welcome to the Interactive Knowledge Enhancer!')
+    print('Please select a topic:')
+    print('1. Science')
+    print('2. Technology')
+    print('3. History')
+    print('4. General Knowledge')
+    choice = input('Enter your choice (1-4): ')
+    return choice
+
+# Define a function to start the quiz
+def start_quiz(topic):
+    print(f'Starting {topic} quiz...')
+    # Fetch a fact to start the quiz
+    fact = fetch_fact(topic)
+    print(f'Here is a fact to get you started: {fact}')
+    # Example quiz question
+    questions = {
+        'science': 'What is the chemical symbol for water?',
+        'technology': 'What does CPU stand for?',
+        'history': 'Who was the first president of the United States?',
+        'general knowledge': 'What is the capital of France?'
+    }
+    answers = {
+        'science': ['H2O', 'CO2', 'NaCl', 'O2'],
+        'technology': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'],
+        'history': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'],
+        'general knowledge': ['Paris', 'London', 'Berlin', 'Madrid']
+    }
+    correct_answers = {
+        'science': 'H2O',
+        'technology': 'Central Processing Unit',
+        'history': 'George Washington',
+        'general knowledge': 'Paris'
+    }
+    print(questions[topic])
+    for i, option in enumerate(answers[topic], 1):
+        print(f'{i}. {option}')
+    user_answer = input('Your answer (1-4): ')
+    if answers[topic][int(user_answer)-1] == correct_answers[topic]:
+        print('Correct!')
+    else:
+        print('Incorrect!')
+
+# Main function to run the program
+def main():
+    choice = display_menu()
+    topics = ['science', 'technology', 'history', 'general knowledge']
+    if choice in ['1', '2', '3', '4']:
+        topic = topics[int(choice)-1]
+        print(f'You selected: {topic}')
+        fact = fetch_fact(topic)
+        print(f'Here is a random fact: {fact}')
+        start_quiz(topic)
+    else:
+        print('Invalid choice. Please run the program again.')
+
+if __name__ == '__main__':
+    main()
