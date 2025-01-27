@@ -1,0 +1,51 @@
+import streamlit as st
+import requests
+import random
+
+# Define topics and their corresponding APIs or content
+TOPICS = {
+    'Science': 'https://science-api.com/random',
+    'Technology': 'https://tech-api.com/random',
+    'History': 'https://history-api.com/random',
+    'General Knowledge': 'https://general-api.com/random'
+}
+
+# Function to fetch random fact or concept
+def fetch_content(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        return response.json()['content']
+    return 'Unable to fetch content at the moment.'
+
+# Function to generate quiz questions
+def generate_quiz(topic):
+    # Placeholder for quiz generation logic
+    questions = [
+        {'question': 'What is the speed of light?', 'options': ['299,792 km/s', '150,000 km/s', '450,000 km/s', '1,000,000 km/s'], 'answer': '299,792 km/s'},
+        {'question': 'Who invented the telephone?', 'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Guglielmo Marconi'], 'answer': 'Alexander Graham Bell'}
+    ]
+    return random.sample(questions, min(len(questions), 5))
+
+# Streamlit app layout
+st.title('Interactive Knowledge Enhancer')
+
+# Topic selection
+selected_topic = st.sidebar.selectbox('Choose a topic:', list(TOPICS.keys()))
+
+# Display random fact or concept
+st.header('Random Fact/Concept')
+content = fetch_content(selected_topic)
+st.write(content)
+
+# Interactive quiz
+st.header('Test Your Knowledge')
+quiz_questions = generate_quiz(selected_topic)
+score = 0
+for i, question in enumerate(quiz_questions):
+    st.subheader(f'Question {i+1}')
+    user_answer = st.radio(question['question'], question['options'])
+    if user_answer == question['answer']:
+        score += 1
+st.write(f'Your score: {score}/{len(quiz_questions)}')
+
+# Note: Replace placeholder URLs with actual APIs for fetching content and quiz questions.
