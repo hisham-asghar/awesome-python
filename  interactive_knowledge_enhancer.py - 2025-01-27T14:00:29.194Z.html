@@ -1,0 +1,56 @@
+import streamlit as st
+import requests
+import random
+
+# Function to fetch random fact from an API
+def fetch_random_fact(topic):
+    url = f"https://api.example.com/facts/{topic}"  # Replace with actual API URL
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return "Failed to fetch a fact. Please try again later."
+
+# Function to display a quiz
+def display_quiz(topic):
+    questions = {
+        'science': [
+            {'question': 'What is the speed of light?', 'options': ['300,000 km/s', '150,000 km/s', '450,000 km/s'], 'answer': '300,000 km/s'},
+            # Add more questions
+        ],
+        'technology': [
+            {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit'], 'answer': 'Central Processing Unit'},
+            # Add more questions
+        ],
+        # Add more topics
+    }
+    if topic in questions:
+        question = random.choice(questions[topic])
+        st.write(question['question'])
+        user_answer = st.radio('Choose the correct answer:', question['options'])
+        if st.button('Submit'):
+            if user_answer == question['answer']:
+                st.success('Correct!')
+            else:
+                st.error('Incorrect!')
+    else:
+        st.write('No quiz available for this topic.')
+
+# Main function to run the app
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    menu = ['Science', 'Technology', 'History', 'General Knowledge']
+    choice = st.sidebar.selectbox('Select a topic:', menu)
+    topic = choice.lower()
+    
+    st.header(f'Welcome to {choice}!')
+    
+    if st.button('Learn a Random Fact'):
+        fact = fetch_random_fact(topic)
+        st.write(fact)
+    
+    if st.button('Take a Quiz'):
+        display_quiz(topic)
+
+if __name__ == '__main__':
+    main()
