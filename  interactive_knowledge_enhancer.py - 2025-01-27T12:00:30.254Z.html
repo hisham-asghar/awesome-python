@@ -1,0 +1,64 @@
+import random
+import requests
+import streamlit as st
+from PIL import Image
+import matplotlib.pyplot as plt
+
+# Function to fetch random fact
+def fetch_random_fact(topic):
+    if topic == 'science':
+        response = requests.get('https://science-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    elif topic == 'technology':
+        response = requests.get('https://tech-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    elif topic == 'history':
+        response = requests.get('https://history-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    else:
+        return 'No fact available for this topic.'
+
+# Function to display content
+def display_content(topic):
+    st.write(f'### Random {topic.capitalize()} Fact')
+    fact = fetch_random_fact(topic)
+    st.write(fact)
+    
+    if topic == 'science':
+        img = Image.open('science_image.png')
+        st.image(img, caption='Science Image')
+    elif topic == 'technology':
+        data = {'Year': [2018, 2019, 2020, 2021], 'Users': [100, 200, 300, 400]}
+        plt.plot(data['Year'], data['Users'])
+        plt.title('Technology Users Growth')
+        st.pyplot()
+    elif topic == 'history':
+        st.write('Interactive history timeline here.')
+
+# Quiz function
+def quiz(topic):
+    questions = {
+        'science': {'question': 'What is the speed of light?', 'options': ['299,792 km/s', '150,000 km/s', '450,000 km/s'], 'answer': '299,792 km/s'},
+        'technology': {'question': 'What year was Python first released?', 'options': ['1991', '2000', '1989'], 'answer': '1991'},
+        'history': {'question': 'Who was the first president of the USA?', 'options': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln'], 'answer': 'George Washington'}
+    }
+    q = questions[topic]
+    st.write(f'### {q["question"]}')
+    answer = st.radio('Choose the correct answer:', q['options'])
+    if st.button('Submit'):
+        if answer == q['answer']:
+            st.success('Correct!')
+        else:
+            st.error('Incorrect!')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    menu = ['Science', 'Technology', 'History']
+    choice = st.sidebar.selectbox('Select a topic', menu)
+    topic = choice.lower()
+    display_content(topic)
+    quiz(topic)
+
+if __name__ == '__main__':
+    main()
