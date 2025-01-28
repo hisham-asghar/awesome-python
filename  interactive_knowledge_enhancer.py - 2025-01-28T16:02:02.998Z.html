@@ -1,0 +1,68 @@
+import streamlit as st
+import requests
+import random
+
+# Define topics and their respective content
+TOPICS = {
+    'Science': {
+        'content': 'Science is the pursuit and application of knowledge and understanding of the natural and social world following a systematic methodology based on evidence.',
+        'quiz': [
+            {'question': 'What is the chemical symbol for water?', 'options': ['H2O', 'CO2', 'NaCl', 'O2'], 'answer': 'H2O'},
+            {'question': 'Who discovered penicillin?', 'options': ['Marie Curie', 'Alexander Fleming', 'Isaac Newton', 'Albert Einstein'], 'answer': 'Alexander Fleming'}
+        ]
+    },
+    'Technology': {
+        'content': 'Technology is the application of scientific knowledge for practical purposes, especially in industry.',
+        'quiz': [
+            {'question': 'What does CPU stand for?', 'options': ['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'], 'answer': 'Central Processing Unit'},
+            {'question': 'Which company developed the Python programming language?', 'options': ['Google', 'Microsoft', 'Python Software Foundation', 'Oracle'], 'answer': 'Python Software Foundation'}
+        ]
+    },
+    'History': {
+        'content': 'History is the study of the past as it is described in written documents. Events occurring before written record are considered prehistory.',
+        'quiz': [
+            {'question': 'Who was the first President of the United States?', 'options': ['Thomas Jefferson', 'George Washington', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+            {'question': 'In which year did World War II end?', 'options': ['1945', '1939', '1941', '1943'], 'answer': '1945'}
+        ]
+    },
+    'General Knowledge': {
+        'content': 'General knowledge is information that has been accumulated over time through various mediums.',
+        'quiz': [
+            {'question': 'What is the capital of France?', 'options': ['London', 'Paris', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'Which planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Saturn'], 'answer': 'Mars'}
+        ]
+    }
+}
+
+# Streamlit app
+st.title('Interactive Knowledge Enhancer')
+
+# Topic selection
+selected_topic = st.selectbox('Choose a topic to learn about:', list(TOPICS.keys()))
+
+# Display content
+st.header(selected_topic)
+st.write(TOPICS[selected_topic]['content'])
+
+# Quiz section
+st.subheader('Test Your Knowledge')
+quiz = TOPICS[selected_topic]['quiz']
+random.shuffle(quiz)
+score = 0
+
+for i, q in enumerate(quiz):
+    st.write(f'Question {i+1}: {q["question"]}')
+    user_answer = st.radio(f'Options for question {i+1}:', q['options'], key=f'question_{i}')
+    if user_answer == q['answer']:
+        score += 1
+
+st.write(f'Your score: {score}/{len(quiz)}')
+
+# Fetching real-time educational content
+if st.button('Fetch a random fact'):
+    response = requests.get('https://uselessfacts.jsph.pl/random.json?language=en')
+    if response.status_code == 200:
+        fact = response.json()['text']
+        st.write(f'Random Fact: {fact}')
+    else:
+        st.write('Failed to fetch a random fact. Please try again later.')
