@@ -1,0 +1,55 @@
+import streamlit as st
+import requests
+import random
+
+# Function to fetch random fact from an API
+def fetch_random_fact(topic):
+    url = f'https://api.facts.com/{topic}/random'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Unable to fetch a fact at the moment.'
+
+# Function to display a quiz
+def display_quiz(topic):
+    questions = {
+        'science': ['What is the chemical symbol for water?', 'What planet is known as the Red Planet?'],
+        'technology': ['What does CPU stand for?', 'Who is known as the father of computers?'],
+        'history': ['In which year did World War II end?', 'Who was the first President of the United States?'],
+        'general knowledge': ['What is the capital of France?', 'How many continents are there?']
+    }
+    answers = {
+        'science': ['H2O', 'Mars'],
+        'technology': ['Central Processing Unit', 'Charles Babbage'],
+        'history': ['1945', 'George Washington'],
+        'general knowledge': ['Paris', '7']
+    }
+    st.write('### Quiz')
+    for i, question in enumerate(questions[topic]):
+        st.write(f'{i+1}. {question}')
+        user_answer = st.text_input(f'Your answer for question {i+1}:', key=f'q{i}')
+        if user_answer:
+            if user_answer.lower() == answers[topic][i].lower():
+                st.success('Correct!')
+            else:
+                st.error(f'Wrong! The correct answer is {answers[topic][i]}')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    st.sidebar.title('Topics')
+    topic = st.sidebar.radio('Choose a topic:', ['Science', 'Technology', 'History', 'General Knowledge'])
+    topic_lower = topic.lower()
+    
+    st.write(f'## {topic}')
+    
+    # Fetch and display a random fact
+    fact = fetch_random_fact(topic_lower)
+    st.write(f'**Random Fact:** {fact}')
+    
+    # Display a quiz
+    display_quiz(topic_lower)
+
+if __name__ == '__main__':
+    main()
