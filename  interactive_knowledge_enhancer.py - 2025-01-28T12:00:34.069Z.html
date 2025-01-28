@@ -1,0 +1,40 @@
+import streamlit as st
+import requests
+import random
+
+# Define topics and their respective APIs or content
+TOPICS = {
+    'Science': 'https://science-api.example.com/facts',
+    'Technology': 'https://tech-api.example.com/facts',
+    'History': 'https://history-api.example.com/facts',
+    'General Knowledge': 'https://general-api.example.com/facts'
+}
+
+# Function to fetch a random fact from the selected topic
+def fetch_fact(topic):
+    response = requests.get(TOPICS[topic])
+    if response.status_code == 200:
+        facts = response.json()
+        return random.choice(facts)
+    else:
+        return 'Unable to fetch a fact at the moment. Please try again later.'
+
+# Function to display a quiz for the selected topic
+def display_quiz(topic):
+    # Placeholder for quiz logic
+    st.write(f'Quiz for {topic} will be displayed here.')
+
+# Streamlit UI
+st.title('Interactive Knowledge Enhancer')
+
+# Sidebar for topic selection
+topic = st.sidebar.selectbox('Choose a topic:', list(TOPICS.keys()))
+
+# Display a random fact
+st.header('Random Fact')
+fact = fetch_fact(topic)
+st.write(fact)
+
+# Display a quiz
+st.header('Quiz')
+display_quiz(topic)
