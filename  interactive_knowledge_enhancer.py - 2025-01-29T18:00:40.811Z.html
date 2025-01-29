@@ -1,0 +1,59 @@
+import streamlit as st
+import requests
+import random
+
+# Function to fetch random fact
+def fetch_random_fact(topic):
+    if topic == 'science':
+        response = requests.get('https://science-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'technology':
+        response = requests.get('https://tech-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'history':
+        response = requests.get('https://history-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'general knowledge':
+        response = requests.get('https://general-facts-api.herokuapp.com/api/v1/facts/random')
+    else:
+        return 'Invalid topic selected.'
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Failed to fetch a fact.'
+
+# Function to display quiz
+def display_quiz(topic):
+    questions = {
+        'science': ['What is the chemical symbol for water?', 'What planet is known as the Red Planet?'],
+        'technology': ['What does CPU stand for?', 'What year was the first iPhone released?'],
+        'history': ['Who was the first president of the United States?', 'In what year did World War II end?'],
+        'general knowledge': ['What is the capital of France?', 'How many continents are there?']
+    }
+    answers = {
+        'science': ['H2O', 'Mars'],
+        'technology': ['Central Processing Unit', '2007'],
+        'history': ['George Washington', '1945'],
+        'general knowledge': ['Paris', '7']
+    }
+    if topic not in questions:
+        return 'Invalid topic selected.'
+    st.write('Quiz on ' + topic.capitalize())
+    for i, question in enumerate(questions[topic]):
+        st.write(f'{i+1}. {question}')
+        user_answer = st.text_input('Your answer:', key=f'answer_{i}')
+        if user_answer:
+            if user_answer.lower() == answers[topic][i].lower():
+                st.write('Correct!')
+            else:
+                st.write(f'Wrong! The correct answer is {answers[topic][i]}.')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    topic = st.sidebar.selectbox('Choose a topic:', ['science', 'technology', 'history', 'general knowledge'])
+    if st.sidebar.button('Get a Random Fact'):
+        fact = fetch_random_fact(topic)
+        st.write(fact)
+    if st.sidebar.button('Take a Quiz'):
+        display_quiz(topic)
+
+if __name__ == '__main__':
+    main()
