@@ -1,0 +1,73 @@
+import streamlit as st
+import requests
+import random
+import matplotlib.pyplot as plt
+
+# Function to fetch random fact
+def fetch_random_fact(topic):
+    if topic == 'science':
+        response = requests.get('https://science-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'technology':
+        response = requests.get('https://tech-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'history':
+        response = requests.get('https://history-facts-api.herokuapp.com/api/v1/facts/random')
+    else:
+        response = requests.get('https://general-facts-api.herokuapp.com/api/v1/facts/random')
+    return response.json()['fact']
+
+# Function to display quiz
+def display_quiz(topic):
+    questions = {
+        'science': ['What is the chemical symbol for water?', 'What planet is known as the Red Planet?'],
+        'technology': ['What does CPU stand for?', 'What year was the first iPhone released?'],
+        'history': ['Who was the first president of the United States?', 'In what year did World War II end?'],
+        'general': ['What is the capital of France?', 'Who wrote "Romeo and Juliet"?']
+    }
+    answers = {
+        'science': ['H2O', 'Mars'],
+        'technology': ['Central Processing Unit', '2007'],
+        'history': ['George Washington', '1945'],
+        'general': ['Paris', 'William Shakespeare']
+    }
+    options = {
+        'science': [['H2O', 'CO2', 'O2', 'NaCl'], ['Mars', 'Jupiter', 'Saturn', 'Venus']],
+        'technology': [['Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'], ['2007', '2008', '2006', '2005']],
+        'history': [['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'], ['1945', '1944', '1946', '1947']],
+        'general': [['Paris', 'London', 'Berlin', 'Madrid'], ['William Shakespeare', 'Charles Dickens', 'Mark Twain', 'Jane Austen']]
+    }
+    for i, question in enumerate(questions[topic]):
+        st.write(f'Question {i+1}: {question}')
+        user_answer = st.radio(f'Options for question {i+1}:', options[topic][i])
+        if user_answer == answers[topic][i]:
+            st.success('Correct!')
+        else:
+            st.error(f'Wrong! The correct answer is {answers[topic][i]}')
+
+# Main function
+st.title('Interactive Knowledge Enhancer')
+topic = st.sidebar.selectbox('Choose a topic:', ['science', 'technology', 'history', 'general'])
+
+if st.sidebar.button('Get Random Fact'):
+    fact = fetch_random_fact(topic)
+    st.write(f'Random Fact: {fact}')
+
+if st.sidebar.button('Take a Quiz'):
+    display_quiz(topic)
+
+# Visualizations
+if topic == 'science':
+    st.write('Science Visualization')
+    plt.plot([1, 2, 3, 4], [10, 20, 25, 30])
+    st.pyplot()
+elif topic == 'technology':
+    st.write('Technology Visualization')
+    plt.bar(['2018', '2019', '2020', '2021'], [100, 200, 150, 300])
+    st.pyplot()
+elif topic == 'history':
+    st.write('History Visualization')
+    plt.hist([1, 2, 2, 3, 3, 3, 4, 4, 4, 4])
+    st.pyplot()
+else:
+    st.write('General Knowledge Visualization')
+    plt.pie([40, 30, 20, 10], labels=['A', 'B', 'C', 'D'])
+    st.pyplot()
