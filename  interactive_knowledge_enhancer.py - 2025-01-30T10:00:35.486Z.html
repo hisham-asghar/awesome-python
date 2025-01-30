@@ -1,0 +1,49 @@
+import streamlit as st
+import requests
+import random
+
+# Function to fetch random fact from an API
+def fetch_random_fact(topic):
+    url = f'https://api.example.com/facts?topic={topic}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Unable to fetch a fact at the moment. Please try again later.'
+
+# Function to display a quiz
+def display_quiz(questions):
+    score = 0
+    for question in questions:
+        st.write(question['question'])
+        answer = st.radio('Choose the correct answer:', question['options'])
+        if answer == question['answer']:
+            score += 1
+            st.success('Correct!')
+        else:
+            st.error('Wrong!')
+    st.write(f'Your final score is {score}/{len(questions)}')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    menu = ['Science', 'Technology', 'History', 'General Knowledge']
+    choice = st.sidebar.selectbox('Select a topic:', menu)
+
+    if choice:
+        st.header(f'Welcome to the {choice} section!')
+        fact = fetch_random_fact(choice)
+        st.subheader('Did you know?')
+        st.write(fact)
+
+        # Example quiz questions
+        quiz_questions = [
+            {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'Who invented the telephone?', 'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Albert Einstein'], 'answer': 'Alexander Graham Bell'},
+            {'question': 'What is the largest planet in our solar system?', 'options': ['Earth', 'Jupiter', 'Saturn', 'Mars'], 'answer': 'Jupiter'}
+        ]
+        st.subheader('Test your knowledge with a quiz!')
+        display_quiz(quiz_questions)
+
+if __name__ == '__main__':
+    main()
