@@ -1,0 +1,54 @@
+import random
+import streamlit as st
+import requests
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Function to fetch random fact from an API
+def fetch_random_fact(topic):
+    url = f'https://api.example.com/facts?topic={topic}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Unable to fetch a fact at the moment.'
+
+# Function to display a quiz
+def display_quiz(questions):
+    score = 0
+    for q in questions:
+        answer = st.radio(q['question'], q['options'])
+        if answer == q['answer']:
+            score += 1
+    st.write(f'Your score is {score}/{len(questions)}')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    menu = ['Science', 'Technology', 'History', 'General Knowledge']
+    choice = st.sidebar.selectbox('Choose a topic', menu)
+
+    if choice:
+        st.header(f'Welcome to the {choice} section!')
+        fact = fetch_random_fact(choice.lower())
+        st.write(f'Did you know? {fact}')
+
+        # Example visualization
+        if choice == 'Science':
+            data = pd.DataFrame({
+                'Year': [2015, 2016, 2017, 2018, 2019],
+                'Discoveries': [10, 15, 13, 20, 17]
+            })
+            plt.plot(data['Year'], data['Discoveries'])
+            plt.title('Scientific Discoveries Over the Years')
+            st.pyplot(plt)
+
+        # Example quiz
+        questions = [
+            {'question': 'What is the capital of France?', 'options': ['Paris', 'London', 'Berlin', 'Madrid'], 'answer': 'Paris'},
+            {'question': 'Who invented the telephone?', 'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla', 'Albert Einstein'], 'answer': 'Alexander Graham Bell'}
+        ]
+        display_quiz(questions)
+
+if __name__ == '__main__':
+    main()
