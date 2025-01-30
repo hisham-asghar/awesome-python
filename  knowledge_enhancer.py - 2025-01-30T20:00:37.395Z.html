@@ -1,0 +1,62 @@
+import streamlit as st
+import requests
+import random
+import matplotlib.pyplot as plt
+
+# Function to fetch random fact
+def fetch_random_fact(topic):
+    if topic == 'science':
+        response = requests.get('https://science-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'technology':
+        response = requests.get('https://tech-facts-api.herokuapp.com/api/v1/facts/random')
+    elif topic == 'history':
+        response = requests.get('https://history-facts-api.herokuapp.com/api/v1/facts/random')
+    else:
+        response = requests.get('https://general-facts-api.herokuapp.com/api/v1/facts/random')
+    return response.json()['fact']
+
+# Function to display content
+def display_content(topic):
+    st.write(f'### Random {topic.capitalize()} Fact')
+    fact = fetch_random_fact(topic)
+    st.write(fact)
+    
+    # Example visualization
+    if topic == 'science':
+        x = range(10)
+        y = [random.randint(1, 100) for _ in x]
+        plt.plot(x, y)
+        plt.title('Random Science Data')
+        st.pyplot(plt)
+    elif topic == 'technology':
+        st.image('https://source.unsplash.com/random/400x200/?technology', caption='Random Technology Image')
+    elif topic == 'history':
+        st.write('Historical events visualization can be added here.')
+    else:
+        st.write('General knowledge content can be displayed here.')
+
+# Quiz function
+def quiz(topic):
+    questions = {
+        'science': ['What is the chemical symbol for water?', 'H2O', 'CO2', 'O2', 'H2SO4'],
+        'technology': ['What does CPU stand for?', 'Central Processing Unit', 'Computer Processing Unit', 'Central Process Unit', 'Computer Process Unit'],
+        'history': ['Who was the first president of the USA?', 'George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'],
+        'general': ['What is the capital of France?', 'Paris', 'London', 'Berlin', 'Madrid']
+    }
+    question, correct_answer, *options = questions[topic]
+    answer = st.radio(question, options)
+    if st.button('Submit'):
+        if answer == correct_answer:
+            st.success('Correct!')
+        else:
+            st.error(f'Wrong! The correct answer is {correct_answer}')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    topic = st.sidebar.selectbox('Choose a topic', ['science', 'technology', 'history', 'general'])
+    display_content(topic)
+    quiz(topic)
+
+if __name__ == '__main__':
+    main()
