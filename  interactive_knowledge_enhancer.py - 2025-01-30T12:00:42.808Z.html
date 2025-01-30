@@ -1,0 +1,61 @@
+import streamlit as st
+import requests
+import random
+
+# Define a function to fetch random facts
+def fetch_random_fact(topic):
+    if topic == 'science':
+        response = requests.get('https://science-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    elif topic == 'technology':
+        response = requests.get('https://tech-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    elif topic == 'history':
+        response = requests.get('https://history-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    elif topic == 'general knowledge':
+        response = requests.get('https://general-facts-api.herokuapp.com/api/v1/facts/random')
+        return response.json()['fact']
+    else:
+        return 'Please select a valid topic.'
+
+# Define a function to generate a quiz
+def generate_quiz(topic):
+    # This is a placeholder for quiz generation logic
+    # In a real application, you would fetch questions from an API or a database
+    questions = {
+        'science': ['What is the speed of light?', 'What is the chemical formula for water?'],
+        'technology': ['What does CPU stand for?', 'What is the main programming language used for Android development?'],
+        'history': ['Who was the first president of the United States?', 'In what year did World War II end?'],
+        'general knowledge': ['What is the capital of France?', 'Who wrote the play "Romeo and Juliet"?']
+    }
+    answers = {
+        'science': ['299,792,458 meters per second', 'H2O'],
+        'technology': ['Central Processing Unit', 'Java'],
+        'history': ['George Washington', '1945'],
+        'general knowledge': ['Paris', 'William Shakespeare']
+    }
+    return questions[topic], answers[topic]
+
+# Streamlit app
+st.title('Interactive Knowledge Enhancer')
+
+# Menu for topic selection
+topic = st.sidebar.selectbox('Choose a topic:', ['science', 'technology', 'history', 'general knowledge'])
+
+# Display a random fact
+st.header('Random Fact')
+fact = fetch_random_fact(topic)
+st.write(fact)
+
+# Generate and display a quiz
+st.header('Quiz')
+questions, answers = generate_quiz(topic)
+for i, question in enumerate(questions):
+    st.write(f'Question {i+1}: {question}')
+    user_answer = st.text_input(f'Your answer for question {i+1}:', key=f'answer_{i}')
+    if user_answer:
+        if user_answer.lower() == answers[i].lower():
+            st.success('Correct!')
+        else:
+            st.error('Incorrect. The correct answer is: ' + answers[i])
