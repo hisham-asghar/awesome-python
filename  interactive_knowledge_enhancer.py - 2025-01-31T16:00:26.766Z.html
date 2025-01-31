@@ -1,0 +1,49 @@
+import streamlit as st
+import requests
+import random
+
+# Function to fetch random fact
+@st.cache
+def fetch_random_fact(topic):
+    url = f'https://api.facts.com/{topic}/random'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()['fact']
+    else:
+        return 'Failed to fetch a fact. Please try again.'
+
+# Function to display quiz
+def display_quiz(questions):
+    score = 0
+    for i, q in enumerate(questions):
+        st.write(f'Question {i+1}: {q['question']}')
+        answer = st.radio('Choose the correct answer:', q['options'], key=f'q{i}')
+        if answer == q['answer']:
+            score += 1
+            st.success('Correct!')
+        else:
+            st.error(f'Wrong! The correct answer is: {q['answer']}')
+    st.write(f'Your final score is {score}/{len(questions)}')
+
+# Main function
+def main():
+    st.title('Interactive Knowledge Enhancer')
+    menu = ['Science', 'Technology', 'History', 'General Knowledge']
+    choice = st.sidebar.selectbox('Select a topic', menu)
+
+    if choice:
+        st.header(f'Welcome to {choice}!')
+        if st.button('Show me a random fact!'):
+            fact = fetch_random_fact(choice.lower())
+            st.write(fact)
+
+        if st.button('Take a quiz!'):
+            questions = [
+                {'question': 'What is the speed of light?', 'options': ['299,792 km/s', '150,000 km/s', '450,000 km/s'], 'answer': '299,792 km/s'},
+                {'question': 'Who invented the telephone?', 'options': ['Thomas Edison', 'Alexander Graham Bell', 'Nikola Tesla'], 'answer': 'Alexander Graham Bell'},
+                # Add more questions here
+            ]
+            display_quiz(questions)
+
+if __name__ == '__main__':
+    main()
