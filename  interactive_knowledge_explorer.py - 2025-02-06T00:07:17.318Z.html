@@ -1,0 +1,49 @@
+import random
+import json
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Sample data for different topics
+knowledge_base = {
+    'science': [
+        {'fact': 'Water is composed of two hydrogen atoms and one oxygen atom.', 'quiz': 'What is water composed of?', 'options': ['H2O', 'O2', 'CO2'], 'answer': 'H2O'},
+        {'fact': 'The speed of light is approximately 299,792 kilometers per second.', 'quiz': 'What is the speed of light?', 'options': ['300,000 km/s', '150,000 km/s', '299,792 km/s'], 'answer': '299,792 km/s'}
+    ],
+    'technology': [
+        {'fact': 'The first computer was built in the 1940s.', 'quiz': 'When was the first computer built?', 'options': ['1920s', '1940s', '1960s'], 'answer': '1940s'},
+        {'fact': 'Python is a popular programming language.', 'quiz': 'Which language is known for its simplicity?', 'options': ['Java', 'Python', 'C++'], 'answer': 'Python'}
+    ],
+    'history': [
+        {'fact': 'The Great Wall of China was built to protect against invasions.', 'quiz': 'What was the Great Wall of China built for?', 'options': ['Trade', 'Protection', 'Tourism'], 'answer': 'Protection'},
+        {'fact': 'The Roman Empire was one of the largest empires in history.', 'quiz': 'What was one of the largest empires?', 'options': ['Ottoman Empire', 'Roman Empire', 'British Empire'], 'answer': 'Roman Empire'}
+    ],
+    'general_knowledge': [
+        {'fact': 'The Earth revolves around the Sun.', 'quiz': 'What does the Earth revolve around?', 'options': ['Moon', 'Sun', 'Stars'], 'answer': 'Sun'},
+        {'fact': 'Humans share 50% of their DNA with bananas.', 'quiz': 'With what do humans share 50% of their DNA?', 'options': ['Apples', 'Bananas', 'Cherries'], 'answer': 'Bananas'}
+    ]
+}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/topic', methods=['POST'])
+def topic():
+    selected_topic = request.form['topic']
+    return redirect(url_for('knowledge', topic=selected_topic))
+
+@app.route('/knowledge/<topic>')
+def knowledge(topic):
+    facts = random.choice(knowledge_base[topic])
+    return render_template('knowledge.html', fact=facts['fact'], quiz=facts['quiz'], options=facts['options'], answer=facts['answer'])
+
+@app.route('/quiz/<topic>', methods=['POST'])
+def quiz(topic):
+    user_answer = request.form['answer']
+    correct_answer = request.form['correct_answer']
+    result = 'Correct!' if user_answer == correct_answer else 'Wrong!'
+    return render_template('quiz_result.html', result=result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
