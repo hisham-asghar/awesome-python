@@ -1,0 +1,137 @@
+import random
+import json
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Sample data for different topics
+knowledge_base = {
+    'science': {
+        'facts': [
+            'Water is made up of two hydrogen atoms and one oxygen atom.',
+            'The speed of light is approximately 299,792 kilometers per second.',
+            'Humans share 50% of their DNA with bananas.'
+        ],
+        'quiz': [
+            {'question': 'What is the chemical symbol for gold?', 'options': ['Au', 'Ag', 'Pb', 'Fe'], 'answer': 'Au'},
+            {'question': 'What planet is known as the Red Planet?', 'options': ['Earth', 'Mars', 'Jupiter', 'Venus'], 'answer': 'Mars'}
+        ]
+    },
+    'technology': {
+        'facts': [
+            'The first computer was invented in the 1940s.',
+            'Python is named after the comedy television show Monty Python.',
+            'There are more than 3.5 billion Google searches per day.'
+        ],
+        'quiz': [
+            {'question': 'Which company developed the iPhone?', 'options': ['Apple', 'Samsung', 'Nokia', 'Microsoft'], 'answer': 'Apple'},
+            {'question': 'What does HTTP stand for?', 'options': ['HyperText Transfer Protocol', 'HyperText Transmission Protocol', 'HighText Transfer Protocol', 'HighText Transmission Protocol'], 'answer': 'HyperText Transfer Protocol'}
+        ]
+    },
+    'history': {
+        'facts': [
+            'The Great Wall of China was built over several dynasties.',
+            'The Titanic sank in 1912 after hitting an iceberg.',
+            'The first human to travel into space was Yuri Gagarin in 1961.'
+        ],
+        'quiz': [
+            {'question': 'Who was the first president of the United States?', 'options': ['George Washington', 'Thomas Jefferson', 'Abraham Lincoln', 'John Adams'], 'answer': 'George Washington'},
+            {'question': 'What year did World War II end?', 'options': ['1945', '1939', '1941', '1944'], 'answer': '1945'}
+        ]
+    },
+    'general_knowledge': {
+        'facts': [
+            'The Eiffel Tower is located in Paris, France.',
+            'The largest ocean on Earth is the Pacific Ocean.',
+            'A group of flamingos is called a "flamboyance."'
+        ],
+        'quiz': [
+            {'question': 'What is the capital of Australia?', 'options': ['Sydney', 'Canberra', 'Melbourne', 'Brisbane'], 'answer': 'Canberra'},
+            {'question': 'How many continents are there?', 'options': ['5', '6', '7', '8'], 'answer': '7'}
+        ]
+    }
+}
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/topic', methods=['POST'])
+def topic():
+    selected_topic = request.form.get('topic')
+    facts = random.choice(knowledge_base[selected_topic]['facts'])
+    quiz = knowledge_base[selected_topic]['quiz']
+    return render_template('topic.html', topic=selected_topic, fact=facts, quiz=quiz)
+
+@app.route('/quiz', methods=['POST'])
+def quiz():
+    selected_topic = request.form.get('topic')
+    user_answers = request.form.getlist('answers')
+    correct_answers = [q['answer'] for q in knowledge_base[selected_topic]['quiz']]
+    score = sum(1 for i in range(len(user_answers)) if user_answers[i] == correct_answers[i])
+    return render_template('result.html', score=score, total=len(correct_answers))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+# index.html template:
+# <!doctype html>
+# <html lang="en">
+# <head>
+#     <meta charset="UTF-8">
+#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#     <title>Knowledge Quiz</title>
+# </head>
+# <body>
+#     <h1>Select a Topic</h1>
+#     <form action="/topic" method="post">
+#         <select name="topic">
+#             <option value="science">Science</option>
+#             <option value="technology">Technology</option>
+#             <option value="history">History</option>
+#             <option value="general_knowledge">General Knowledge</option>
+#         </select>
+#         <input type="submit" value="Choose Topic">
+#     </form>
+# </body>
+# </html>
+
+# topic.html template:
+# <!doctype html>
+# <html lang="en">
+# <head>
+#     <meta charset="UTF-8">
+#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#     <title>{{ topic|capitalize }} Facts</title>
+# </head>
+# <body>
+#     <h1>{{ topic|capitalize }} Fact</h1>
+#     <p>{{ fact }}</p>
+#     <h2>Quiz</h2>
+#     <form action="/quiz" method="post">
+#         <input type="hidden" name="topic" value="{{ topic }}">
+#         {% for q in quiz %}
+#             <p>{{ q.question }}</p>
+#             {% for option in q.options %}
+#                 <input type="radio" name="answers" value="{{ option }}"> {{ option }}<br>
+#             {% endfor %}
+#         {% endfor %}
+#         <input type="submit" value="Submit Answers">
+#     </form>
+# </body>
+# </html>
+
+# result.html template:
+# <!doctype html>
+# <html lang="en">
+# <head>
+#     <meta charset="UTF-8">
+#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#     <title>Quiz Result</title>
+# </head>
+# <body>
+#     <h1>Your Score</h1>
+#     <p>You scored {{ score }} out of {{ total }}.</p>
+#     <a href="/">Try Again</a>
+# </body>
+# </html>
