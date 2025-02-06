@@ -1,0 +1,50 @@
+import random
+import json
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
+# Sample data for topics
+topics = {
+    'Science': [
+        {'fact': 'Water is made up of two hydrogen atoms and one oxygen atom.', 'quiz': 'What is water made of?', 'options': ['H2O', 'CO2', 'O2', 'He'], 'answer': 'H2O'},
+        {'fact': 'The speed of light is approximately 299,792 kilometers per second.', 'quiz': 'What is the speed of light?', 'options': ['100,000 km/s', '299,792 km/s', '400,000 km/s', '150,000 km/s'], 'answer': '299,792 km/s'}
+    ],
+    'Technology': [
+        {'fact': 'The first computer was invented in the 1940s.', 'quiz': 'When was the first computer invented?', 'options': ['1920s', '1940s', '1960s', '1980s'], 'answer': '1940s'},
+        {'fact': 'Artificial Intelligence can perform tasks that typically require human intelligence.', 'quiz': 'What can AI do?', 'options': ['Sleep', 'Think', 'Perform human tasks', 'Eat'], 'answer': 'Perform human tasks'}
+    ],
+    'History': [
+        {'fact': 'The Great Wall of China was built to protect against invasions.', 'quiz': 'What was the Great Wall of China built for?', 'options': ['Trade', 'Tourism', 'Protection', 'Agriculture'], 'answer': 'Protection'},
+        {'fact': 'World War II lasted from 1939 to 1945.', 'quiz': 'When did World War II start?', 'options': ['1939', '1941', '1945', '1935'], 'answer': '1939'}
+    ],
+    'General Knowledge': [
+        {'fact': 'The Earth revolves around the Sun.', 'quiz': 'What does the Earth revolve around?', 'options': ['Moon', 'Stars', 'Sun', 'Mars'], 'answer': 'Sun'},
+        {'fact': 'Humans have 206 bones in their body.', 'quiz': 'How many bones do humans have?', 'options': ['205', '206', '207', '208'], 'answer': '206'}
+    ]
+}
+
+@app.route('/')
+def home():
+    return render_template('index.html', topics=topics.keys())
+
+@app.route('/topic/<topic_name>')
+def topic_content(topic_name):
+    facts = random.choice(topics[topic_name])
+    return jsonify(fact=facts['fact'], quiz=facts['quiz'], options=facts['options'])
+
+@app.route('/quiz/<topic_name>')
+def quiz(topic_name):
+    quiz_data = random.choice(topics[topic_name])
+    return jsonify(quiz=quiz_data['quiz'], options=quiz_data['options'])
+
+@app.route('/check_answer', methods=['POST'])
+def check_answer():
+    data = request.json
+    topic_name = data['topic']
+    answer = data['answer']
+    correct_answer = next(item for item in topics[topic_name] if item['quiz'] == data['quiz'])['answer']
+    return jsonify(correct=(answer == correct_answer))
+
+if __name__ == '__main__':
+    app.run(debug=True)
